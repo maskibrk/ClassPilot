@@ -35,18 +35,22 @@ trait BelongsToTeacher
      * - a teacher/admin IS the tenant, so it's their own id
      * - a student/parent belongs to a teacher via users.teacher_id
      */
-    protected static function currentTeacherId(): ?int
-    {
-        $user = Auth::user();
+protected static function currentTeacherId(): ?int
+{
+    $user = Auth::user();
 
-        if (! $user) {
-            return null;
-        }
-
-        return in_array($user->role, ['teacher', 'admin'])
-            ? $user->id
-            : $user->teacher_id;
+    if (! $user) {
+        return null;
     }
+
+    if ($user->role === 'admin') {
+        return null;
+    }
+
+    return $user->role === 'teacher'
+        ? $user->id
+        : $user->teacher_id;
+}
 
     public function teacher(): BelongsTo
     {

@@ -70,4 +70,9 @@ public function initials(): string
         ->take(2)
         ->implode('');
 }
+
+public function children(): HasMany
+{
+    return $this->hasMany(Student::class, 'parent_id');
+}
 }

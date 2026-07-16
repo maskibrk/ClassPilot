@@ -14,12 +14,17 @@ class Student extends Model
 {
     use HasFactory, SoftDeletes, BelongsToTeacher;
 
-    protected $fillable = [
-        'teacher_id', 'user_id', 'name', 'email', 'phone',
-        'parent_name', 'parent_email', 'parent_phone',
-        'notes', 'status', 'join_date',
-    ];
-
+protected $fillable = [
+    'teacher_id',
+    'parent_id',
+    'user_id',
+    'name',
+    'email',
+    'phone',
+    'notes',
+    'status',
+    'join_date',
+];
     protected function casts(): array
     {
         return ['join_date' => 'date'];
@@ -60,4 +65,8 @@ class Student extends Model
     {
         return $this->hasMany(Attachment::class);
     }
+public function parent(): BelongsTo
+{
+    return $this->belongsTo(User::class, 'parent_id');
+}
 }

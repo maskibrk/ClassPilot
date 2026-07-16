@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Facades\Gate;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,11 +22,12 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
-    {
-        $this->configureDefaults();
-    }
-
+/* public function boot(): void */
+/* { */
+/*     Gate::define('create-teacher', fn($user) => $user->role === 'admin'); */
+/*     Gate::define('create-parent',  fn($user) => $user->role === 'admin'); */
+/*     Gate::define('create-student', fn($user) => in_array($user->role, ['admin', 'teacher'])); */
+/* } */
     /**
      * Configure default behaviors for production-ready applications.
      */
