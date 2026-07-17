@@ -51,11 +51,15 @@ public function store(Request $request)
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
-    {
-        //
-    }
 
+public function show(User $teacher)
+{
+    abort_unless($teacher->isTeacher(), 404);
+
+    $teacher->load('students');
+
+    return view('admin.teachers.show', compact('teacher'));
+}
     /**
      * Show the form for editing the specified resource.
      */

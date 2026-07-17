@@ -109,6 +109,16 @@
 
         </div>
 
+<div>
+
+<label>Confirm Password</label>
+
+<input type="password"
+name="password_confirmation"
+class="w-full rounded-lg border p-2">
+
+</div>
+
 
 
 
@@ -128,7 +138,31 @@
 
         </div>
 
+<div>
 
+    <label class="block font-medium">
+        Children
+    </label>
+
+
+    <select
+        id="children-select"
+        name="students[]"
+        multiple
+        class="mt-1 w-full rounded-lg border p-2">
+
+        @foreach($students as $student)
+
+            <option value="{{ $student->id }}">
+                {{ $student->name }}
+            </option>
+
+        @endforeach
+
+    </select>
+
+
+</div>
 
 
 
@@ -147,6 +181,29 @@
 
 
 </div>
+@push('scripts')
 
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    new TomSelect('#children-select', {
+
+        plugins: ['remove_button'],
+
+        placeholder: 'Search children...',
+
+        create: false,
+
+        maxItems: null,
+
+        searchField: 'text',
+
+    });
+
+});
+</script>
+
+@endpush
 
 </x-layouts::app>
+

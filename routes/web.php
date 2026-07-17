@@ -22,13 +22,13 @@ Route::middleware(['auth', 'role:admin'])
         Route::view('dashboard', 'admin.dashboard')->name('dashboard');
 
         Route::resource('students', AdminStudentController::class)
-            ->only(['index', 'create', 'store']);
+            ->only(['index', 'create', 'store','show']);
 
         Route::resource('teachers', TeacherController::class)
-            ->only(['index', 'create', 'store']);
+            ->only(['index', 'create', 'store','show']);
 
         Route::resource('parents', ParentController::class)
-            ->only(['index', 'create', 'store']);
+            ->only(['index', 'create', 'store','show']);
     });
 
 Route::middleware(['auth', 'role:teacher'])
@@ -39,7 +39,7 @@ Route::middleware(['auth', 'role:teacher'])
         Route::view('dashboard', 'teacher.dashboard')->name('dashboard');
 
         Route::resource('students', TeacherStudentController::class)
-            ->only(['index', 'create', 'store']);
+            ->only(['index', 'create', 'store','show']);
     });
 
 require __DIR__.'/settings.php';

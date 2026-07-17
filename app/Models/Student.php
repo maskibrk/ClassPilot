@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Student extends Model
 {
-    use HasFactory, SoftDeletes, BelongsToTeacher;
+    use HasFactory, SoftDeletes;
 
 protected $fillable = [
     'teacher_id',
@@ -78,4 +78,5 @@ public function teachers(): BelongsToMany
         'teacher_id'
     );
 }
+
 }

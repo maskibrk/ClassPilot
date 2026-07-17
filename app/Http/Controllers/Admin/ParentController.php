@@ -16,8 +16,9 @@ class ParentController extends Controller
     public function index()
     {
 $parents = User::parents()
-    ->withCount('students')
+    ->withCount('children')
     ->get();
+
 return view("admin.parents.index",compact('parents'));
     }
 
@@ -26,8 +27,10 @@ return view("admin.parents.index",compact('parents'));
      */
     public function create()
     {
-$parents=User::where('role','parent')->get();
- $students=Student::whereNull("parent_id")->get();
+$students = Student::select('id','name')
+    ->whereNull('parent_id')
+    ->orderBy('name')
+    ->get();
 return view('admin.parents.create',compact('students'));
     }
 
@@ -100,9 +103,13 @@ public function store(Request $request)
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(User $parent)
     {
-        //
+    abort_unless($parent->isParent(), 404);
+
+    $parent->load('children');
+
+    return view('admin.parents.show', compact('parent'));
     }
 
     /**

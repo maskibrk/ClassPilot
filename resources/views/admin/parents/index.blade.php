@@ -83,8 +83,11 @@
 
                     <td class="px-6 py-4">
 
-                        {{ $parent->name }}
-
+<a
+    href="{{ route('admin.parents.show', $parent) }}"
+    class="font-medium text-blue-600 hover:underline dark:text-blue-400">
+    {{ $parent->name }}
+</a>
                     </td>
 
 
@@ -97,7 +100,7 @@
 
                     <td class="px-6 py-4">
 
-                        {{ $parent->students_count }}
+                        {{ $parent->children_count }}
 
                     </td>
 

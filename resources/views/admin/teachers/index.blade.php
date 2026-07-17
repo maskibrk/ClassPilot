@@ -68,11 +68,13 @@ Students
 
 <tr class="border-t">
 
-
 <td class="px-6 py-4">
-{{ $teacher->name }}
+    <a
+        href="{{ route('admin.teachers.show', $teacher) }}"
+        class="font-medium text-blue-600 hover:text-blue-700 hover:underline dark:text-blue-400 dark:hover:text-blue-300">
+        {{ $teacher->name }}
+    </a>
 </td>
-
 
 <td class="px-6 py-4">
 {{ $teacher->email }}

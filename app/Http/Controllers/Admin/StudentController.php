@@ -102,11 +102,15 @@ public function store(Request $request)
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
-    {
-        //
-    }
+public function show(Student $student)
+{
+    $student->load([
+        'teachers',
+        'parent',
+    ]);
 
+    return view('admin.students.show', compact('student'));
+}
     /**
      * Show the form for editing the specified resource.
      */
