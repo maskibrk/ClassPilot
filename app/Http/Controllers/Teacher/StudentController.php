@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Teacher;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Student;
 
 class StudentController extends Controller
 {
@@ -12,25 +13,71 @@ class StudentController extends Controller
      */
     public function index()
     {
-        //
+ $students=auth()->user()->students()->latest()->get();
+return view("teacher.students.index",compact('students'));
+
     }
+
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+    $parents = User::parents()->get();
+
+    return view('teacher.students.create',compact('parents'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        //
-    }
+public function store(Request $request)
+{
+    $validated = $request->validate([
+        'parent_id' => [
+            'nullable',
+            'exists:users,id'
+        ],
+        'name' => [
+            'required',
+            'string',
+            'max:255'
+        ],
+        'email' => [
+            'required',
+            'email',
+            'unique:students,email'
+        ],
+        'phone' => [
+            'nullable',
+            'string'
+        ],
+        'notes' => [
+            'nullable',
+            'string'
+        ],
+        'status' => [
+            'required'
+        ],
+        'join_date' => [
+            'nullable',
+            'date'
+        ],
+    ]);
 
+
+    $student = Student::create($validated);
+
+
+    // attach logged-in teacher
+    $student->teachers()->attach(auth()->id());
+
+
+    return redirect()
+        ->route('teacher.students.index')
+        ->with('success', 'Student created successfully.');
+}
     /**
      * Display the specified resource.
      */

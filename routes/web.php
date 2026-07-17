@@ -2,7 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\StudentController;
+use App\Http\Controllers\Admin\StudentController as AdminStudentController;
+use App\Http\Controllers\Teacher\StudentController as TeacherStudentController;
 use App\Http\Controllers\Admin\TeacherController;
 use App\Http\Controllers\Admin\ParentController;
 use App\Models\Student;
@@ -18,14 +19,29 @@ Route::middleware(['auth', 'role:admin'])
     ->name('admin.')
     ->group(function () {
 
-        Route::resource('teachers', TeacherController::class)
+        Route::view('dashboard', 'admin.dashboard')->name('dashboard');
+
+        Route::resource('students', AdminStudentController::class)
             ->only(['index', 'create', 'store']);
 
-        Route::resource('students', StudentController::class)
+        Route::resource('teachers', TeacherController::class)
             ->only(['index', 'create', 'store']);
 
         Route::resource('parents', ParentController::class)
             ->only(['index', 'create', 'store']);
-
     });
+
+Route::middleware(['auth', 'role:teacher'])
+    ->prefix('teacher')
+    ->name('teacher.')
+    ->group(function () {
+
+        Route::view('dashboard', 'teacher.dashboard')->name('dashboard');
+
+        Route::resource('students', TeacherStudentController::class)
+            ->only(['index', 'create', 'store']);
+    });
+
 require __DIR__.'/settings.php';
+
+

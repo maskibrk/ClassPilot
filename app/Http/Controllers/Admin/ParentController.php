@@ -15,8 +15,10 @@ class ParentController extends Controller
      */
     public function index()
     {
-$parents=User::where('role','parent')->get();
-return view("parents.index",compact('parents'));
+$parents = User::parents()
+    ->withCount('students')
+    ->get();
+return view("admin.parents.index",compact('parents'));
     }
 
     /**
@@ -24,9 +26,9 @@ return view("parents.index",compact('parents'));
      */
     public function create()
     {
-
+$parents=User::where('role','parent')->get();
  $students=Student::whereNull("parent_id")->get();
-return view('parents.create',compact('students'));
+return view('admin.parents.create',compact('students'));
     }
 
     /**

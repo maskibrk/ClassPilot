@@ -4,9 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
@@ -40,13 +42,22 @@ class User extends Authenticatable
     {
         return $this->role === 'student';
     }
-
-    // If this user IS a teacher: everything they own.
-    public function students(): HasMany
+    public function isParent(): bool
     {
-        return $this->hasMany(Student::class, 'teacher_id');
+        return $this->role === 'parent';
     }
 
+
+    // If this user IS a teacher: everything they own.
+public function students(): BelongsToMany
+{
+    return $this->belongsToMany(
+        Student::class,
+        'student_teacher',
+        'teacher_id',
+        'student_id'
+    );
+}
     public function subjects(): HasMany
     {
         return $this->hasMany(Subject::class, 'teacher_id');
@@ -75,4 +86,28 @@ public function children(): HasMany
 {
     return $this->hasMany(Student::class, 'parent_id');
 }
+
+//scopes
+    public function scopeTeachers(Builder $query)
+    {
+        return $query->where('role', 'teacher');
+    }
+
+
+    public function scopeParents(Builder $query)
+    {
+        return $query->where('role', 'parent');
+    }
+
+
+    public function scopeStudents(Builder $query)
+    {
+        return $query->where('role', 'student');
+    }
+
+
+    public function scopeAdmins(Builder $query)
+    {
+        return $query->where('role', 'admin');
+    }
 }

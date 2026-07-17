@@ -69,4 +69,13 @@ public function parent(): BelongsTo
 {
     return $this->belongsTo(User::class, 'parent_id');
 }
+public function teachers(): BelongsToMany
+{
+    return $this->belongsToMany(
+        User::class,
+        'student_teacher',
+        'student_id',
+        'teacher_id'
+    );
+}
 }

@@ -13,8 +13,8 @@ class TeacherController extends Controller
      */
     public function index()
     {
-    $teachers = User::where('role', 'teacher')->get();
-return view("teachers.index",compact('teachers'));
+    $teachers = User::teachers()->withCount('students')->get();
+return view("admin.teachers.index",compact('teachers'));
     }
 
     /**
@@ -23,7 +23,7 @@ return view("teachers.index",compact('teachers'));
     public function create()
     {
 
-return view("teachers.create");
+return view("admin.teachers.create");
     }
 
     /**

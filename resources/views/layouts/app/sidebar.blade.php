@@ -10,25 +10,135 @@
                 <flux:sidebar.collapse class="lg:hidden" />
             </flux:sidebar.header>
 
-            <flux:sidebar.nav>
-                <flux:sidebar.group :heading="__('Platform')" class="grid">
-                    <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
-                        {{ __('Dashboard') }}
-                    </flux:sidebar.item>
-                </flux:sidebar.group>
-            </flux:sidebar.nav>
+<flux:sidebar.nav>
 
+    @if(auth()->user()->isAdmin())
+
+        <flux:sidebar.group :heading="__('Admin')" class="grid">
+
+            <flux:sidebar.item
+                icon="home"
+                :href="route('admin.dashboard')"
+                :current="request()->routeIs('admin.dashboard')"
+                wire:navigate>
+                Dashboard
+            </flux:sidebar.item>
+
+
+            <flux:sidebar.item
+                icon="users"
+                :href="route('admin.students.index')"
+                :current="request()->routeIs('admin.students.*')"
+                wire:navigate>
+                Students
+            </flux:sidebar.item>
+
+
+            <flux:sidebar.item
+                icon="user"
+                :href="route('admin.teachers.index')"
+                :current="request()->routeIs('admin.teachers.*')"
+                wire:navigate>
+                Teachers
+            </flux:sidebar.item>
+
+
+            <flux:sidebar.item
+                icon="user-group"
+                :href="route('admin.parents.index')"
+                :current="request()->routeIs('admin.parents.*')"
+                wire:navigate>
+                Parents
+            </flux:sidebar.item>
+
+        </flux:sidebar.group>
+
+
+    @elseif(auth()->user()->isTeacher())
+
+
+        <flux:sidebar.group :heading="__('Teacher')" class="grid">
+
+
+            <flux:sidebar.item
+                icon="home"
+                :href="route('teacher.dashboard')"
+                :current="request()->routeIs('teacher.dashboard')"
+                wire:navigate>
+                Dashboard
+            </flux:sidebar.item>
+
+
+            <flux:sidebar.item
+                icon="users"
+                :href="route('teacher.students.index')"
+                :current="request()->routeIs('teacher.students.*')"
+                wire:navigate>
+                My Students
+            </flux:sidebar.item>
+
+
+        </flux:sidebar.group>
+
+
+    @elseif(auth()->user()->isParent())
+
+
+        <flux:sidebar.group :heading="__('Parent')" class="grid">
+
+
+            <flux:sidebar.item
+                icon="home"
+                :href="route('parent.dashboard')"
+                :current="request()->routeIs('parent.dashboard')"
+                wire:navigate>
+                Dashboard
+            </flux:sidebar.item>
+
+
+            <flux:sidebar.item
+                icon="academic-cap"
+                href="#"
+                wire:navigate>
+                My Children
+            </flux:sidebar.item>
+
+
+        </flux:sidebar.group>
+
+
+    @elseif(auth()->user()->isStudent())
+
+
+        <flux:sidebar.group :heading="__('Student')" class="grid">
+
+
+            <flux:sidebar.item
+                icon="home"
+                :href="route('student.dashboard')"
+                :current="request()->routeIs('student.dashboard')"
+                wire:navigate>
+                Dashboard
+            </flux:sidebar.item>
+
+
+            <flux:sidebar.item
+                icon="book-open"
+                href="#"
+                wire:navigate>
+                Courses
+            </flux:sidebar.item>
+
+
+        </flux:sidebar.group>
+
+
+    @endif
+
+</flux:sidebar.nav>
             <flux:spacer />
 
-            <flux:sidebar.nav>
-                <flux:sidebar.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
-                    {{ __('Repository') }}
-                </flux:sidebar.item>
 
-                <flux:sidebar.item icon="book-open-text" href="https://laravel.com/docs/starter-kits#livewire" target="_blank">
-                    {{ __('Documentation') }}
-                </flux:sidebar.item>
-            </flux:sidebar.nav>
 
             <x-desktop-user-menu class="hidden lg:block" :name="auth()->user()->name" />
         </flux:sidebar>

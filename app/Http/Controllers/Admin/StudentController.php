@@ -15,73 +15,85 @@ class StudentController extends Controller
      */
     public function index()
     {
- $students=Student::all();
-
-return view("students.index",compact('students'));
+$students = Student::with(['teachers','parent'])->latest()->get();
+return view("admin.students.index",compact('students'));
 
     }
+
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request)
-    {
-
-    $teachers = User::where('role', 'teacher')->get();
-
-    return view('students.create', compact('teachers'));
-    }
-
+public function create()
+{
+    return view('admin.students.create', [
+        'teachers' => User::teachers()->get(),
+        'parents' => User::parents()->get(),
+    ]);
+}
     /**
      * Store a newly created resource in storage.
      */
 public function store(Request $request)
 {
     $validated = $request->validate([
-        'teacher_id' => [
+        'teachers' => [
             'required',
+            'array'
+        ],
+
+        'teachers.*' => [
             'exists:users,id'
         ],
+
+        'parent_id' => [
+            'nullable',
+            'exists:users,id'
+        ],
+
         'name' => [
             'required',
             'string',
             'max:255'
         ],
+
         'email' => [
             'required',
             'email',
             'unique:students,email'
         ],
+
         'phone' => [
             'nullable',
             'string'
         ],
-        'parent_name' => [
-            'nullable',
-            'string'
-        ],
-        'parent_email' => [
-            'nullable',
-            'email'
-        ],
-        'parent_phone' => [
-            'nullable',
-            'string'
-        ],
+
         'notes' => [
             'nullable',
             'string'
         ],
+
         'status' => [
             'required'
         ],
+
         'join_date' => [
             'nullable',
             'date'
         ],
     ]);
 
-    Student::create($validated);
+
+    $student = Student::create(
+        collect($validated)
+            ->except('teachers')
+            ->toArray()
+    );
+
+
+    $student->teachers()
+        ->attach($validated['teachers']);
+
 
     return redirect()
         ->route('admin.students.index')
