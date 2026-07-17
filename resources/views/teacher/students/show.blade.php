@@ -17,7 +17,7 @@
         </div>
 
         <a
-            href="{{ route('admin.students.index') }}"
+            href="{{ route('teacher.students.index') }}"
             class="rounded-lg bg-zinc-700 px-4 py-2 text-white hover:bg-zinc-800">
 
             Back
@@ -80,13 +80,7 @@
 
             @if($student->parent)
 
-                <a
-                    href="{{ route('admin.parents.show', $student->parent) }}"
-                    class="text-blue-600 hover:underline dark:text-blue-400">
-
                     {{ $student->parent->name }}
-
-                </a>
 
             @else
 
@@ -110,13 +104,8 @@
 
                 <div class="mb-2">
 
-                    <a
-                        href="{{ route('admin.teachers.show', $teacher) }}"
-                        class="text-blue-600 hover:underline dark:text-blue-400">
 
                         {{ $teacher->name }}
-
-                    </a>
 
                 </div>
 
