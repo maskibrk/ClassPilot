@@ -81,10 +81,13 @@
 
 
                     <td class="px-6 py-4 font-medium">
-
-                        {{ $student->name }}
-
+<a
+    href="{{ route('teacher.students.show', $student) }}"
+    class="font-medium text-blue-600 hover:underline dark:text-blue-400">
+    {{ $student->name }}
+</a>
                     </td>
+
 
 
 
