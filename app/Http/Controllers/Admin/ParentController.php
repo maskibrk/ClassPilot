@@ -15,11 +15,11 @@ class ParentController extends Controller
      */
     public function index()
     {
-$parents = User::parents()
-    ->withCount('children')
-    ->get();
+        $parents = User::parents()
+            ->withCount('children')
+            ->get();
 
-return view("admin.parents.index",compact('parents'));
+        return view("admin.parents.index", compact('parents'));
     }
 
     /**
@@ -27,45 +27,45 @@ return view("admin.parents.index",compact('parents'));
      */
     public function create()
     {
-$students = Student::select('id','name')
-    ->whereNull('parent_id')
-    ->orderBy('name')
-    ->get();
-return view('admin.parents.create',compact('students'));
+        $students = Student::select('id', 'name')
+            ->whereNull('parent_id')
+            ->orderBy('name')
+            ->get();
+        return view('admin.parents.create', compact('students'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-public function store(Request $request)
+    public function store(Request $request)
     {
         $validated = $request->validate([
 
             'name' => [
                 'required',
                 'string',
-                'max:255'
+                'max:255',
             ],
 
             'email' => [
                 'required',
                 'email',
-                'unique:users,email'
+                'unique:users,email',
             ],
 
             'password' => [
                 'required',
                 'confirmed',
-                'min:8'
+                'min:8',
             ],
 
             'students' => [
                 'required',
-                'array'
+                'array',
             ],
 
             'students.*' => [
-                'exists:students,id'
+                'exists:students,id',
             ],
 
         ]);
@@ -90,7 +90,7 @@ public function store(Request $request)
 
         Student::whereIn('id', $validated['students'])
             ->update([
-                'parent_id' => $parent->id
+                'parent_id' => $parent->id,
             ]);
 
 
@@ -105,34 +105,104 @@ public function store(Request $request)
      */
     public function show(User $parent)
     {
-    abort_unless($parent->isParent(), 404);
+        abort_unless($parent->isParent(), 404);
 
-    $parent->load('children');
+        $parent->load('children');
 
-    return view('admin.parents.show', compact('parent'));
+        return view('admin.parents.show', compact('parent'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(User $parent)
     {
-        //
+        abort_unless($parent->isParent(), 404);
+        $students = Student::query()
+            ->whereNull('parent_id')
+            ->orWhere('parent_id', $parent->id)
+            ->orderBy('name')
+            ->get(['id', 'name', 'parent_id']);
+        $parent->load('children');
+        return view('admin.parents.edit', compact('parent', 'students'));
     }
+
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, User $parent)
     {
-        //
-    }
+        abort_unless($parent->isParent(), 404);
 
+        $validated = $request->validate([
+
+            'name' => [
+                'required',
+                'string',
+                'max:255'
+            ],
+
+            'email' => [
+                'required',
+                'email',
+                'unique:users,email,' . $parent->id
+            ],
+
+            'phone' => [
+                'nullable',
+                'string'
+            ],
+
+            'students' => [
+                'nullable',
+                'array'
+            ],
+
+            'students.*' => [
+                'exists:students,id'
+            ],
+
+        ]);
+
+        $parent->update([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'phone' => $validated['phone'] ?? null,
+        ]);
+
+        // Remove current children
+        Student::where('parent_id', $parent->id)
+            ->update([
+                'parent_id' => null
+            ]);
+
+        // Assign selected children
+        if (!empty($validated['students'])) {
+
+            Student::whereIn('id', $validated['students'])
+                ->update([
+                    'parent_id' => $parent->id
+                ]);
+        }
+
+        return redirect()
+            ->route('admin.parents.show', $parent)
+            ->with('success', 'Parent updated successfully.');
+    }
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(User $parent)
     {
-        //
+        abort_unless($parent->isParent(), 404);
+        Student::where('parent_id', $parent->id)
+            ->update([
+                'parent_id' => null
+            ]);
+        $parent->delete();
+        return redirect()
+            ->route('admin.parent.index')
+            ->with('success', 'Parent deleted successfully.');
     }
 }

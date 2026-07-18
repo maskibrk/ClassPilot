@@ -9,13 +9,20 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory;
+    use Notifiable;
 
     protected $fillable = [
-        'name', 'email', 'password', 'role',
-        'phone', 'timezone', 'avatar_path',
+        'name',
+        'email',
+        'password',
+        'role',
+        'phone',
+        'timezone',
+        'avatar_path',
     ];
 
     protected $hidden = ['password', 'remember_token'];
@@ -49,15 +56,15 @@ class User extends Authenticatable
 
 
     // If this user IS a teacher: everything they own.
-public function students(): BelongsToMany
-{
-    return $this->belongsToMany(
-        Student::class,
-        'student_teacher',
-        'teacher_id',
-        'student_id'
-    );
-}
+    public function students(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Student::class,
+            'student_teacher',
+            'teacher_id',
+            'student_id'
+        );
+    }
     public function subjects(): HasMany
     {
         return $this->hasMany(Subject::class, 'teacher_id');
@@ -74,20 +81,20 @@ public function students(): BelongsToMany
     {
         return $this->hasOne(Student::class, 'user_id');
     }
-public function initials(): string
-{
-    return collect(explode(' ', $this->name))
-        ->map(fn ($word) => strtoupper(substr($word, 0, 1)))
-        ->take(2)
-        ->implode('');
-}
+    public function initials(): string
+    {
+        return collect(explode(' ', $this->name))
+            ->map(fn($word) => strtoupper(substr($word, 0, 1)))
+            ->take(2)
+            ->implode('');
+    }
 
-public function children(): HasMany
-{
-    return $this->hasMany(Student::class, 'parent_id');
-}
+    public function children(): HasMany
+    {
+        return $this->hasMany(Student::class, 'parent_id');
+    }
 
-//scopes
+    //scopes
     public function scopeTeachers(Builder $query)
     {
         return $query->where('role', 'teacher');

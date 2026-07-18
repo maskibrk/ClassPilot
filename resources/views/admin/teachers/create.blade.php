@@ -12,6 +12,7 @@ Create Teacher
 action="{{ route('admin.teachers.store') }}"
 class="space-y-5 rounded-xl bg-white p-6 shadow">
 
+
 @csrf
 
 
