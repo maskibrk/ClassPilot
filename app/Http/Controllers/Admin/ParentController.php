@@ -105,7 +105,6 @@ class ParentController extends Controller
      */
     public function show(User $parent)
     {
-        abort_unless($parent->isParent(), 404);
 
         $parent->load('children');
 
@@ -117,7 +116,6 @@ class ParentController extends Controller
      */
     public function edit(User $parent)
     {
-        abort_unless($parent->isParent(), 404);
         $students = Student::query()
             ->whereNull('parent_id')
             ->orWhere('parent_id', $parent->id)
@@ -133,7 +131,6 @@ class ParentController extends Controller
      */
     public function update(Request $request, User $parent)
     {
-        abort_unless($parent->isParent(), 404);
 
         $validated = $request->validate([
 
@@ -195,7 +192,6 @@ class ParentController extends Controller
      */
     public function destroy(User $parent)
     {
-        abort_unless($parent->isParent(), 404);
         Student::where('parent_id', $parent->id)
             ->update([
                 'parent_id' => null

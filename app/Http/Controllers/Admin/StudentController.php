@@ -15,102 +15,101 @@ class StudentController extends Controller
      */
     public function index()
     {
-$students = Student::with(['teachers','parent'])->latest()->get();
-return view("admin.students.index",compact('students'));
-
+        $students = Student::with(['teachers', 'parent'])->latest()->get();
+        return view("admin.students.index", compact('students'));
     }
 
 
     /**
      * Show the form for creating a new resource.
      */
-public function create()
-{
-    return view('admin.students.create', [
-        'teachers' => User::teachers()->get(),
-        'parents' => User::parents()->get(),
-    ]);
-}
+    public function create()
+    {
+        return view('admin.students.create', [
+            'teachers' => User::teachers()->get(),
+            'parents' => User::parents()->get(),
+        ]);
+    }
     /**
      * Store a newly created resource in storage.
      */
-public function store(Request $request)
-{
-    $validated = $request->validate([
-        'teachers' => [
-            'required',
-            'array'
-        ],
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'teachers' => [
+                'required',
+                'array'
+            ],
 
-        'teachers.*' => [
-            'exists:users,id'
-        ],
+            'teachers.*' => [
+                'exists:users,id'
+            ],
 
-        'parent_id' => [
-            'nullable',
-            'exists:users,id'
-        ],
+            'parent_id' => [
+                'nullable',
+                'exists:users,id'
+            ],
 
-        'name' => [
-            'required',
-            'string',
-            'max:255'
-        ],
+            'name' => [
+                'required',
+                'string',
+                'max:255'
+            ],
 
-        'email' => [
-            'required',
-            'email',
-            'unique:students,email'
-        ],
+            'email' => [
+                'required',
+                'email',
+                'unique:students,email'
+            ],
 
-        'phone' => [
-            'nullable',
-            'string'
-        ],
+            'phone' => [
+                'nullable',
+                'string'
+            ],
 
-        'notes' => [
-            'nullable',
-            'string'
-        ],
+            'notes' => [
+                'nullable',
+                'string'
+            ],
 
-        'status' => [
-            'required'
-        ],
+            'status' => [
+                'required'
+            ],
 
-        'join_date' => [
-            'nullable',
-            'date'
-        ],
-    ]);
-
-
-    $student = Student::create(
-        collect($validated)
-            ->except('teachers')
-            ->toArray()
-    );
+            'join_date' => [
+                'nullable',
+                'date'
+            ],
+        ]);
 
 
-    $student->teachers()
-        ->attach($validated['teachers']);
+        $student = Student::create(
+            collect($validated)
+                ->except('teachers')
+                ->toArray()
+        );
 
 
-    return redirect()
-        ->route('admin.students.index')
-        ->with('success', 'Student created successfully.');
-}
+        $student->teachers()
+            ->attach($validated['teachers']);
+
+
+        return redirect()
+            ->route('admin.students.index')
+            ->with('success', 'Student created successfully.');
+    }
     /**
      * Display the specified resource.
      */
-public function show(Student $student)
-{
-    $student->load([
-        'teachers',
-        'parent',
-    ]);
+    public function show(Student $student)
+    {
+        $student->load([
+            'teachers',
+            'parent',
+        ]);
 
-    return view('admin.students.show', compact('student'));
-}
+        return view('admin.students.show', compact('student'));
+    }
     /**
      * Show the form for editing the specified resource.
      */

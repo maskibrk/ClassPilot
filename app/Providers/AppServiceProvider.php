@@ -4,9 +4,12 @@ namespace App\Providers;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
+use App\Models\User;
+use App\Models\Student;
 use Illuminate\Support\Facades\Gate;
 
 class AppServiceProvider extends ServiceProvider
@@ -18,19 +21,25 @@ class AppServiceProvider extends ServiceProvider
     {
         //
     }
+    /**/
+    /*     * Bootstrap any application services. */
+    /*      */
+    /* / */
+    public function boot(): void
+    {
+        Route::bind('teacher', function ($value) {
+            return User::teachers()->findOrFail($value);
+        });
+        Route::bind('students', function ($value) {
+            return Student::findOrFail($value);
+        });
+        Route::bind('parent', function ($value) {
+            return User::parents()->findOrFail($value);
+        });
+    }
 
-    /**
-     * Bootstrap any application services.
-     */
-/* public function boot(): void */
-/* { */
-/*     Gate::define('create-teacher', fn($user) => $user->role === 'admin'); */
-/*     Gate::define('create-parent',  fn($user) => $user->role === 'admin'); */
-/*     Gate::define('create-student', fn($user) => in_array($user->role, ['admin', 'teacher'])); */
-/* } */
-    /**
-     * Configure default behaviors for production-ready applications.
-     */
+    /* * Configure default behaviors for production-ready applications. */
+    /* */
     protected function configureDefaults(): void
     {
         Date::use(CarbonImmutable::class);
@@ -39,14 +48,15 @@ class AppServiceProvider extends ServiceProvider
             app()->isProduction(),
         );
 
-        Password::defaults(fn (): ?Password => app()->isProduction()
-            ? Password::min(12)
+        Password::defaults(
+            fn(): ?Password => app()->isProduction()
+                ? Password::min(12)
                 ->mixedCase()
                 ->letters()
                 ->numbers()
                 ->symbols()
                 ->uncompromised()
-            : null,
+                : null,
         );
     }
 }

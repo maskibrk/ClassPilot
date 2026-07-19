@@ -1,11 +1,13 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
+
 use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
+
 class TeacherController extends Controller
 {
     /**
@@ -13,8 +15,8 @@ class TeacherController extends Controller
      */
     public function index()
     {
-    $teachers = User::teachers()->withCount('students')->get();
-return view("admin.teachers.index",compact('teachers'));
+        $teachers = User::teachers()->withCount('students')->get();
+        return view("admin.teachers.index", compact('teachers'));
     }
 
     /**
@@ -23,13 +25,13 @@ return view("admin.teachers.index",compact('teachers'));
     public function create()
     {
 
-return view("admin.teachers.create");
+        return view("admin.teachers.create");
     }
 
     /**
      * Store a newly created resource in storage.
      */
-public function store(Request $request)
+    public function store(Request $request)
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -52,14 +54,13 @@ public function store(Request $request)
      * Display the specified resource.
      */
 
-public function show(User $teacher)
-{
-    abort_unless($teacher->isTeacher(), 404);
+    public function show(User $teacher)
+    {
 
-    $teacher->load('students');
+        $teacher->load('students');
 
-    return view('admin.teachers.show', compact('teacher'));
-}
+        return view('admin.teachers.show', compact('teacher'));
+    }
     /**
      * Show the form for editing the specified resource.
      */
