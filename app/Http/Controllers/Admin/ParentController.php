@@ -174,9 +174,9 @@ class ParentController extends Controller
         ]);
 
         // Assign selected children
-        if (!empty($validated['students'])) {
+        if (!empty($validated['children'])) {
 
-            Student::whereIn('id', $validated['students'])
+            Student::whereIn('id', $validated['children'])
                 ->update([
                     'parent_id' => $parent->id
                 ]);

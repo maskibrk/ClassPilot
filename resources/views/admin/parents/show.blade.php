@@ -16,6 +16,13 @@
 
         </div>
 
+                <a
+                    href="{{route('admin.parents.edit',$parent)}}"
+                    class="block rounded-lg bg-blue-600 px-4 py-2 text-center text-white hover:bg-blue-700">
+
+                    Edit Parent
+
+                </a>
         <a
             href="{{ route('admin.parents.index') }}"
             class="rounded-lg bg-zinc-700 px-4 py-2 text-white hover:bg-zinc-800">

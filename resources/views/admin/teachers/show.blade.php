@@ -106,7 +106,7 @@
             <div class="space-y-3">
 
                 <a
-                    href="#"
+                    href="{{route('admin.teachers.edit',$teacher)}}"
                     class="block rounded-lg bg-blue-600 px-4 py-2 text-center text-white hover:bg-blue-700">
 
                     Edit Teacher
