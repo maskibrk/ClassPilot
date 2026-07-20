@@ -113,24 +113,104 @@ class StudentController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Student $student)
     {
-        //
+
+        $teachers = User::teachers()
+            ->select('id', 'name')
+            ->orderBy('name')
+            ->get();
+
+        $parents = User::parents()
+            ->select('id', 'name')
+            ->orderBy('name')
+            ->get();
+
+        $student->load('teachers:id,name', 'parent:id,name');
+
+        return view('admin.students.edit', compact('teachers', 'parents', 'student'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Student $student)
     {
-        //
+        $validated = $request->validate([
+
+            'name' => [
+                'required',
+                'string',
+                'max:255'
+            ],
+
+            'email' => [
+                'required',
+                'email',
+                'unique:students,email,' . $student->id
+            ],
+
+            'phone' => [
+                'nullable',
+                'string'
+            ],
+
+            'notes' => [
+                'nullable',
+                'string'
+            ],
+
+            'status' => [
+                'required',
+                'in:active,inactive'
+            ],
+
+            'join_date' => [
+                'nullable',
+                'date'
+            ],
+
+            'parent_id' => [
+                'nullable',
+                'exists:users,id'
+            ],
+
+            'teachers' => [
+                'required',
+                'array'
+            ],
+
+            'teachers.*' => [
+                'exists:users,id'
+            ],
+
+        ]);
+
+        $student->update(
+            collect($validated)
+                ->except('teachers')
+                ->toArray()
+        );
+
+        $student->teachers()->sync($validated['teachers']);
+
+        return redirect()
+            ->route('admin.students.show', $student)
+            ->with('success', 'Student updated successfully.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Student $student)
     {
-        //
+        $student->teachers()->detach();
+
+        $student->delete();
+
+
+        return redirect()
+            ->route('admin.students.index')
+            ->with('success', 'Student deleted successfully.');
     }
 }

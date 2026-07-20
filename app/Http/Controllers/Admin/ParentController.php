@@ -120,8 +120,8 @@ class ParentController extends Controller
             ->whereNull('parent_id')
             ->orWhere('parent_id', $parent->id)
             ->orderBy('name')
-            ->get(['id', 'name', 'parent_id']);
-        $parent->load('children');
+            ->get(['id', 'name']);
+        $parent->load('children:id,name');
         return view('admin.parents.edit', compact('parent', 'students'));
     }
 
@@ -151,12 +151,12 @@ class ParentController extends Controller
                 'string'
             ],
 
-            'students' => [
+            'children' => [
                 'nullable',
                 'array'
             ],
 
-            'students.*' => [
+            'children.*' => [
                 'exists:students,id'
             ],
 
@@ -169,10 +169,9 @@ class ParentController extends Controller
         ]);
 
         // Remove current children
-        Student::where('parent_id', $parent->id)
-            ->update([
-                'parent_id' => null
-            ]);
+        $parent->children()->update([
+            'parent_id' => null,
+        ]);
 
         // Assign selected children
         if (!empty($validated['students'])) {

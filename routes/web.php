@@ -21,11 +21,9 @@ Route::middleware(['auth', 'role:admin'])
 
         Route::view('dashboard', 'admin.dashboard')->name('dashboard');
 
-        Route::resource('students', AdminStudentController::class)
-            ->only(['index', 'create', 'store', 'show']);
+        Route::resource('students', AdminStudentController::class);
 
-        Route::resource('teachers', TeacherController::class)
-            ->only(['index', 'create', 'store', 'show']);
+        Route::resource('teachers', TeacherController::class);
 
         Route::resource('parents', ParentController::class);
     });
