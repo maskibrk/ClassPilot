@@ -14,17 +14,17 @@ class Student extends Model
 {
     use HasFactory, SoftDeletes;
 
-protected $fillable = [
-    'teacher_id',
-    'parent_id',
-    'user_id',
-    'name',
-    'email',
-    'phone',
-    'notes',
-    'status',
-    'join_date',
-];
+    protected $fillable = [
+        'teacher_id',
+        'parent_id',
+        'user_id',
+        'name',
+        'email',
+        'phone',
+        'notes',
+        'status',
+        'join_date',
+    ];
     protected function casts(): array
     {
         return ['join_date' => 'date'];
@@ -65,18 +65,17 @@ protected $fillable = [
     {
         return $this->hasMany(Attachment::class);
     }
-public function parent(): BelongsTo
-{
-    return $this->belongsTo(User::class, 'parent_id');
-}
-public function teachers(): BelongsToMany
-{
-    return $this->belongsToMany(
-        User::class,
-        'student_teacher',
-        'student_id',
-        'teacher_id'
-    );
-}
-
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'parent_id');
+    }
+    public function teachers(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            User::class,
+            'student_teacher',
+            'student_id',
+            'teacher_id'
+        );
+    }
 }

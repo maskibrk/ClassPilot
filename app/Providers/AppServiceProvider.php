@@ -30,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
         Route::bind('teacher', function ($value) {
             return User::teachers()->findOrFail($value);
         });
-        Route::bind('students', function ($value) {
+        Route::bind('student', function ($value) {
             return Student::findOrFail($value);
         });
         Route::bind('parent', function ($value) {

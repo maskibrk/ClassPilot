@@ -14,9 +14,8 @@ class StudentController extends Controller
      */
     public function index()
     {
- $students=auth()->user()->students()->latest()->get();
-return view("teacher.students.index",compact('students'));
-
+        $students = auth()->user()->students()->latest()->get();
+        return view("teacher.students.index", compact('students'));
     }
 
 
@@ -25,95 +24,162 @@ return view("teacher.students.index",compact('students'));
      */
     public function create(Request $request)
     {
-    $parents = User::parents()->get();
+        $parents = User::parents()->get();
 
-    return view('teacher.students.create',compact('parents'));
+        return view('teacher.students.create', compact('parents'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-public function store(Request $request)
-{
-    $validated = $request->validate([
-        'parent_id' => [
-            'nullable',
-            'exists:users,id'
-        ],
-        'name' => [
-            'required',
-            'string',
-            'max:255'
-        ],
-        'email' => [
-            'required',
-            'email',
-            'unique:students,email'
-        ],
-        'phone' => [
-            'nullable',
-            'string'
-        ],
-        'notes' => [
-            'nullable',
-            'string'
-        ],
-        'status' => [
-            'required'
-        ],
-        'join_date' => [
-            'nullable',
-            'date'
-        ],
-    ]);
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'parent_id' => [
+                'nullable',
+                'exists:users,id'
+            ],
+            'name' => [
+                'required',
+                'string',
+                'max:255'
+            ],
+            'email' => [
+                'required',
+                'email',
+                'unique:students,email'
+            ],
+            'phone' => [
+                'nullable',
+                'string'
+            ],
+            'notes' => [
+                'nullable',
+                'string'
+            ],
+            'status' => [
+                'required'
+            ],
+            'join_date' => [
+                'nullable',
+                'date'
+            ],
+        ]);
 
 
-    $student = Student::create($validated);
+        $student = Student::create($validated);
 
 
-    // attach logged-in teacher
-    $student->teachers()->attach(auth()->id());
+        // attach logged-in teacher
+        $student->teachers()->attach(auth()->id());
 
 
-    return redirect()
-        ->route('teacher.students.index')
-        ->with('success', 'Student created successfully.');
-}
+        return redirect()
+            ->route('teacher.students.index')
+            ->with('success', 'Student created successfully.');
+    }
     /**
      * Display the specified resource.
      */
     public function show(Student $student)
     {
-            $student->load([
-        'teachers',
-        'parent',
-    ]);
+        $student = $this->ownedStudent($student);
 
-    return view('teacher.students.show', compact('student'));
+        $student->load('parent');
 
+        return view('teacher.students.show', compact('student'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Student $student)
     {
-        //
+
+        $student = $this->ownedStudent($student);
+
+        $parent = Student::parent()
+            ->select('id', 'name')
+            ->orderBy('name')
+            ->get();
+
+        return view('teacher.students.edit', compact('student', 'parent'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Student $student)
     {
-        //
+        $validated = $request->validate([
+
+            'name' => [
+                'required',
+                'string',
+                'max:255'
+            ],
+
+            'email' => [
+                'required',
+                'email',
+                'unique:students,email,' . $student->id
+            ],
+
+            'phone' => [
+                'nullable',
+                'string'
+            ],
+
+            'notes' => [
+                'nullable',
+                'string'
+            ],
+
+            'status' => [
+                'required',
+                'in:active,inactive'
+            ],
+
+            'join_date' => [
+                'nullable',
+                'date'
+            ],
+
+            'parent_id' => [
+                'nullable',
+                'exists:users,id'
+            ],
+
+        ]);
+
+        $student->update($validated);
+
+
+        return redirect()
+            ->route('teacher.students.show', $student)
+            ->with('success', 'Student updated successfully.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Student $student)
     {
-        //
+        $student = $this->ownedStudent($student);
+        $student->teachers()->detach(auth()->id());
+
+        /* $student->delete(); */
+
+        return redirect()
+            ->route('teacher.students.index')
+            ->with('success', 'Student deleted/detached for the moment successfully.');
+    }
+    //helper
+    private function ownedStudent(Student $student): Student
+    {
+
+        return auth()->user()
+            ->students()
+            ->findOrFail($student->id);
     }
 }
