@@ -16,14 +16,25 @@
 
         </div>
 
-        <a
-            href="{{ route('teacher.students.index') }}"
-            class="rounded-lg bg-zinc-700 px-4 py-2 text-white hover:bg-zinc-800">
+<div class="flex gap-3">
 
-            Back
+    <a
+        href="{{ route('teacher.students.edit', $student) }}"
+        class="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
 
-        </a>
+        Edit
 
+    </a>
+
+    <a
+        href="{{ route('teacher.students.index') }}"
+        class="rounded-lg bg-zinc-700 px-4 py-2 text-white hover:bg-zinc-800">
+
+        Back
+
+    </a>
+
+</div>
     </div>
 
 

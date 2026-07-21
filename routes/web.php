@@ -35,8 +35,7 @@ Route::middleware(['auth', 'role:teacher'])
 
         Route::view('dashboard', 'teacher.dashboard')->name('dashboard');
 
-        Route::resource('students', TeacherStudentController::class)
-            ->only(['index', 'create', 'store', 'show']);
+        Route::resource('students', TeacherStudentController::class);
     });
 
 require __DIR__ . '/settings.php';

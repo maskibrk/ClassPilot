@@ -98,12 +98,12 @@ class StudentController extends Controller
 
         $student = $this->ownedStudent($student);
 
-        $parent = Student::parent()
+        $parents = User::parents()
             ->select('id', 'name')
             ->orderBy('name')
             ->get();
 
-        return view('teacher.students.edit', compact('student', 'parent'));
+        return view('teacher.students.edit', compact('student', 'parents'));
     }
 
     /**
