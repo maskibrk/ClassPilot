@@ -1,10 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Teacher;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\AcademyClass;
+use App\Models\Student;
 use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Validation\Rule;
 
 class AcademicClassController extends Controller
 {
@@ -13,8 +16,8 @@ class AcademicClassController extends Controller
      */
     public function index()
     {
-        $classes = auth()->user()->classes()->get();
-        return view('teacher.classes.index', compact('classes'));
+        $classes = AcademyClass::with('teacher')->withCount('students')->latest()->get();
+        return view('admin.classes.index', compact('classes'));
     }
 
     /**
@@ -22,9 +25,10 @@ class AcademicClassController extends Controller
      */
     public function create()
     {
-        $students = auth()->user()->students()->orderBy('name')->get();
+        $students = Student::orderBy('name')->get();
+        $teachers = User::teachers()->orderBy('name')->get();
 
-        return view('teacher.classes.create', compact('students'));
+        return view('admin.classes.create', compact('students', 'teachers'));
     }
 
     /**
@@ -33,6 +37,12 @@ class AcademicClassController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
+
+            'teacher_id' => [
+                'required',
+                Rule::userWithRole('teacher')
+            ],
+
             'name' => [
                 'required',
                 'string',
@@ -55,16 +65,17 @@ class AcademicClassController extends Controller
             ],
         ]);
 
-        $class = auth()->user()->classes()->create([
+
+        $class = AcademyClass::create(
             collect($validated)
                 ->except('students')
                 ->toArray()
-        ]);
+        );
 
         $class->students()->sync($validated['students'] ?? []);
 
         return redirect()
-            ->route('teacher.classes.index')
+            ->route('admin.classes.index')
             ->with('success', 'Class created successfully.');
     }
 
@@ -74,11 +85,9 @@ class AcademicClassController extends Controller
     public function show(AcademyClass $class)
     {
 
-        $class = $this->ownedClass($class);
+        $class->load('teacher', 'students');
 
-        $class->load('students');
-
-        return view('teacher.classes.show', compact('class'));
+        return view('admin.classes.show', compact('class'));
     }
 
     /**
@@ -86,11 +95,14 @@ class AcademicClassController extends Controller
      */
     public function edit(AcademyClass $class)
     {
-        $class = $this->ownedClass($class);
 
-        $students = auth()->user()->students()->orderBy('name')->get();
+        $class->load('teacher', 'students');
 
-        return view('teacher.classes.edit', compact('class', 'students'));
+        $teachers = User::teachers()->orderBy('name')->get();
+
+        $students = Student::orderBy('name')->get();
+
+        return view('admin.classes.edit', compact('class', 'teachers', 'students'));
     }
 
     /**
@@ -98,24 +110,30 @@ class AcademicClassController extends Controller
      */
     public function update(Request $request, AcademyClass $class)
     {
-        $class = $this->ownedClass($class);
 
         $validated = $request->validate([
+
+            'teacher_id' => [
+                'required',
+                Rule::userWithRole('teacher')
+            ],
+
             'name' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
+            'description' => ['nullable', 'string', 'max:255'],
             'students' => ['nullable', 'array'],
             'students.*' => ['exists:students,id'],
         ]);
 
         $class->update([
-            'name' => $validated['name'],
-            'description' => $validated['description'] ?? null,
+            collect($validated)
+                ->except('students')
+                ->toArray()
         ]);
 
         $class->students()->sync($validated['students'] ?? []);
 
         return redirect()
-            ->route('teacher.classes.show', $class)
+            ->route('admin.classes.show', $class)
             ->with('success', 'Class updated successfully.');
     }
 
@@ -124,20 +142,11 @@ class AcademicClassController extends Controller
      */
     public function destroy(AcademyClass $class)
     {
-        $class = $this->ownedClass($class);
 
         $class->delete();
 
         return redirect()
-            ->route('teacher.classes.index')
+            ->route('admin.classes.index')
             ->with('success', 'Class deleted successfully.');
-    }
-
-    //helper
-    private function ownedClass(AcademyClass $class): AcademyClass
-    {
-        return auth()->user()
-            ->classes()
-            ->findOrFail($class->id);
     }
 }

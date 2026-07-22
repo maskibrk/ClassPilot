@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Student;
 use App\Models\User;
+use Illuminate\Validation\Rule;
 
 class StudentController extends Controller
 {
@@ -37,7 +38,7 @@ class StudentController extends Controller
         $validated = $request->validate([
             'parent_id' => [
                 'nullable',
-                'exists:users,id'
+                Rule::userWithRole('parent')
             ],
             'name' => [
                 'required',
@@ -147,7 +148,7 @@ class StudentController extends Controller
 
             'parent_id' => [
                 'nullable',
-                'exists:users,id'
+                Rule::userWithRole('parent')
             ],
 
         ]);

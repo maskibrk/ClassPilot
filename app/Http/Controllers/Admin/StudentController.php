@@ -8,6 +8,7 @@ use App\Models\Student;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class StudentController extends Controller
 {
@@ -44,12 +45,12 @@ class StudentController extends Controller
             ],
 
             'teachers.*' => [
-                'exists:users,id'
+                Rule::userWithRole('teacher')
             ],
 
             'parent_id' => [
                 'nullable',
-                'exists:users,id'
+                Rule::userWithRole('parent')
             ],
 
             'name' => [
@@ -96,14 +97,9 @@ class StudentController extends Controller
         ]);
 
         $student = Student::create([
-            'user_id' => $user->id,
-            'parent_id' => $validated['parent_id'] ?? null,
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'phone' => $validated['phone'] ?? null,
-            'notes' => $validated['notes'] ?? null,
-            'status' => $validated['status'],
-            'join_date' => $validated['join_date'] ?? null,
+            collect($validated)
+                ->except('teachers')
+                ->toArray()
         ]);
 
         $student->teachers()
@@ -177,7 +173,7 @@ class StudentController extends Controller
             ],
 
             'password' => [
-                'required',
+                'nullable',
                 'confirmed',
                 'min:8',
             ],
@@ -194,7 +190,8 @@ class StudentController extends Controller
 
             'parent_id' => [
                 'nullable',
-                'exists:users,id'
+
+                Rule::userWithRole('parent')
             ],
 
             'teachers' => [
@@ -203,7 +200,8 @@ class StudentController extends Controller
             ],
 
             'teachers.*' => [
-                'exists:users,id'
+
+                Rule::userWithRole('teacher')
             ],
 
         ]);

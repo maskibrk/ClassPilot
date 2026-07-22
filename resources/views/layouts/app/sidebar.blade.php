@@ -51,6 +51,15 @@
                 Parents
             </flux:sidebar.item>
 
+            <flux:sidebar.item
+            icon="academic-cap"
+            :href="route('admin.classes.index')"
+            :current="request()->routeIs('admin.classes.*')"
+            wire:navigate>
+            Classes
+            </flux:sidebar.item>
+
+
         </flux:sidebar.group>
 
 

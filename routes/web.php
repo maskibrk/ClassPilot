@@ -6,7 +6,8 @@ use App\Http\Controllers\Admin\StudentController as AdminStudentController;
 use App\Http\Controllers\Teacher\StudentController as TeacherStudentController;
 use App\Http\Controllers\Admin\TeacherController;
 use App\Http\Controllers\Admin\ParentController;
-use App\Http\Controllers\Teacher\AcademicClassController;
+use App\Http\Controllers\Teacher\AcademicClassController as TeacherAcademicClassController;
+use App\Http\Controllers\Admin\AcademicClassController as AdminAcademicClassController;
 use App\Models\Student;
 
 Route::view('/', 'welcome')->name('home');
@@ -27,6 +28,8 @@ Route::middleware(['auth', 'role:admin'])
         Route::resource('teachers', TeacherController::class);
 
         Route::resource('parents', ParentController::class);
+
+        Route::resource('classes', AdminAcademicClassController::class);
     });
 
 Route::middleware(['auth', 'role:teacher'])
@@ -38,7 +41,7 @@ Route::middleware(['auth', 'role:teacher'])
 
         Route::resource('students', TeacherStudentController::class);
 
-        Route::resource('classes', AcademicClassController::class);
+        Route::resource('classes', TeacherAcademicClassController::class);
     });
 
 require __DIR__ . '/settings.php';
