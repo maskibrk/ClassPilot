@@ -78,4 +78,11 @@ class Student extends Model
             'teacher_id'
         );
     }
+    public function classes(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            AcademyClass::class,
+            'academy_class_student'
+        );
+    }
 }

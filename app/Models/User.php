@@ -94,6 +94,14 @@ class User extends Authenticatable
         return $this->hasMany(Student::class, 'parent_id');
     }
 
+    public function academyClasses(): HasMany
+    {
+        return $this->hasMany(
+            AcademyClass::class,
+            'teacher_id'
+        );
+    }
+
     //scopes
     public function scopeTeachers(Builder $query)
     {
