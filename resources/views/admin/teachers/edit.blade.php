@@ -83,13 +83,35 @@
         </div>
 
 
-        <button
-            class="rounded-lg bg-blue-600 px-5 py-2 text-white">
+<div class="flex items-center justify-between">
 
-            Save Changes
+    <form
+        action="{{ route('admin.teachers.destroy', $teacher) }}"
+        method="POST"
+        onsubmit="return confirm('Are you sure you want to delete this teacher?');">
+
+        @csrf
+        @method('DELETE')
+
+        <button
+            type="submit"
+            class="rounded-lg bg-red-600 px-5 py-2 text-white hover:bg-red-700">
+
+            Delete Teacher
 
         </button>
 
+    </form>
+
+    <button
+        type="submit"
+        class="rounded-lg bg-blue-600 px-5 py-2 text-white hover:bg-blue-700">
+
+        Save Changes
+
+    </button>
+
+</div>
 
     </form>
 

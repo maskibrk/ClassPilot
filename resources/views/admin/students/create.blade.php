@@ -119,7 +119,27 @@
 
 </div>
 
+<div>
+    <label>Password</label>
 
+    <input
+        type="password"
+        name="password"
+        class="mt-1 w-full rounded-lg border p-2 @error('password') border-red-500 @enderror">
+
+    @error('password')
+        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+    @enderror
+</div>
+
+<div>
+    <label>Confirm Password</label>
+
+    <input
+        type="password"
+        name="password_confirmation"
+        class="mt-1 w-full rounded-lg border p-2">
+</div>
 
 
 <div>

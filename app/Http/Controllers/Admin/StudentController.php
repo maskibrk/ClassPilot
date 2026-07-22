@@ -66,7 +66,11 @@ class StudentController extends Controller
                 'nullable',
                 'string'
             ],
-
+            'password' => [
+                'required',
+                'confirmed',
+                'min:8',
+            ],
             'notes' => [
                 'nullable',
                 'string'
