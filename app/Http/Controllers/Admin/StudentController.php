@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Student;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class StudentController extends Controller
 {
@@ -35,6 +36,7 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
+
         $validated = $request->validate([
             'teachers' => [
                 'required',
@@ -86,13 +88,23 @@ class StudentController extends Controller
             ],
         ]);
 
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            'role' => 'student',
+        ]);
 
-        $student = Student::create(
-            collect($validated)
-                ->except('teachers')
-                ->toArray()
-        );
-
+        $student = Student::create([
+            'user_id' => $user->id,
+            'parent_id' => $validated['parent_id'] ?? null,
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'phone' => $validated['phone'] ?? null,
+            'notes' => $validated['notes'] ?? null,
+            'status' => $validated['status'],
+            'join_date' => $validated['join_date'] ?? null,
+        ]);
 
         $student->teachers()
             ->attach($validated['teachers']);
@@ -164,6 +176,12 @@ class StudentController extends Controller
                 'string'
             ],
 
+            'password' => [
+                'required',
+                'confirmed',
+                'min:8',
+            ],
+
             'status' => [
                 'required',
                 'in:active,inactive'
@@ -190,11 +208,22 @@ class StudentController extends Controller
 
         ]);
 
+        $student->user()->update([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+        ]);
+
         $student->update(
             collect($validated)
-                ->except('teachers')
+                ->except(['teachers', 'password'])
                 ->toArray()
         );
+
+        if ($request->filled('password')) {
+            $student->user()->update([
+                'password' => Hash::make($validated['password']),
+            ]);
+        }
 
         $student->teachers()->sync($validated['teachers']);
 
@@ -209,9 +238,9 @@ class StudentController extends Controller
     public function destroy(Student $student)
     {
         $student->teachers()->detach();
-
+        $user = $student->user;
         $student->delete();
-
+        $user?->delete();
 
         return redirect()
             ->route('admin.students.index')
