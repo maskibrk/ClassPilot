@@ -97,11 +97,17 @@ class StudentController extends Controller
         ]);
 
         $student = Student::create([
-            collect($validated)
-                ->except('teachers')
-                ->toArray()
+            'user_id' => $user->id,
+            'parent_id' => $validated['parent_id'] ?? null,
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'phone' => $validated['phone'] ?? null,
+            'notes' => $validated['notes'] ?? null,
+            'status' => $validated['status'],
+            'join_date' => $validated['join_date'] ?? null,
         ]);
 
+        $student->teachers()->attach($validated['teachers']);
         $student->teachers()
             ->attach($validated['teachers']);
 

@@ -124,11 +124,11 @@ class AcademicClassController extends Controller
             'students.*' => ['exists:students,id'],
         ]);
 
-        $class->update([
+        $class->update(
             collect($validated)
                 ->except('students')
                 ->toArray()
-        ]);
+        );
 
         $class->students()->sync($validated['students'] ?? []);
 

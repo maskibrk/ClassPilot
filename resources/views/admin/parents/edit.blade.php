@@ -115,6 +115,22 @@ Save Changes
 
 </form>
 
+<form
+    action="{{ route('admin.parents.destroy', $parent) }}"
+    method="POST"
+    class="mt-4"
+    onsubmit="return confirm('Are you sure you want to delete this parent?');">
+
+    @csrf
+    @method('DELETE')
+
+    <button
+        type="submit"
+        class="rounded-lg bg-red-600 px-5 py-2 text-white hover:bg-red-700">
+        Delete Parent
+    </button>
+
+</form>
 
 </div>
 

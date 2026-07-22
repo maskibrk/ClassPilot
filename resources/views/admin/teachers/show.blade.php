@@ -135,7 +135,7 @@
     </div>
 
 
-    @if($teacher->academyClasses->isEmpty())
+    @if($teacher->classes->isEmpty())
 
         <div class="p-6 text-zinc-500">
             No classes assigned.
@@ -168,13 +168,23 @@
 
             <tbody>
 
-                @foreach($teacher->academyClasses as $class)
+                @foreach($teacher->classes as $class)
 
                     <tr class="border-t dark:border-zinc-700">
 
-                        <td class="px-6 py-4 text-zinc-900 dark:text-zinc-100">
+
+                    <td class="px-6 py-4 font-medium">
+
+                        <a
+                            href="{{ route('admin.classes.show', $class) }}"
+                            class="font-medium text-blue-600 hover:underline dark:text-blue-400">
+
                             {{ $class->name }}
-                        </td>
+
+                        </a>
+
+                    </td>
+
 
                         <td class="px-6 py-4 text-zinc-900 dark:text-zinc-100">
                             {{ $class->code ?? '-' }}

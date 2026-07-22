@@ -116,11 +116,14 @@ class ParentController extends Controller
      */
     public function edit(User $parent)
     {
-        $students = Student::query()
-            ->whereNull('parent_id')
-            ->orWhere('parent_id', $parent->id)
+
+        Student::query()
+            ->where(function ($query) use ($parent) {
+                $query->whereNull('parent_id')->orWhere('parent_id', $parent->id);
+            })
             ->orderBy('name')
             ->get(['id', 'name']);
+
         $parent->load('children:id,name');
         return view('admin.parents.edit', compact('parent', 'students'));
     }
@@ -197,7 +200,7 @@ class ParentController extends Controller
             ]);
         $parent->delete();
         return redirect()
-            ->route('admin.parent.index')
+            ->route('admin.parents.index')
             ->with('success', 'Parent deleted successfully.');
     }
 }

@@ -6,7 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Student;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Hash;
+
+use function PHPUnit\Framework\isEmpty;
 
 class StudentController extends Controller
 {
@@ -54,6 +58,14 @@ class StudentController extends Controller
                 'nullable',
                 'string'
             ],
+
+            'password' => [
+                'nullable',
+                'confirmed',
+                'min:8',
+            ],
+
+
             'notes' => [
                 'nullable',
                 'string'
@@ -68,12 +80,29 @@ class StudentController extends Controller
         ]);
 
 
-        $student = Student::create($validated);
+        DB::transaction(function () use ($validated) {
+            $user = User::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
+                'role' => 'student',
+            ]);
+
+            $student = Student::create([
+                'user_id' => $user->id,
+                'parent_id' => $validated['parent_id'] ?? null,
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'phone' => $validated['phone'] ?? null,
+                'notes' => $validated['notes'] ?? null,
+                'status' => $validated['status'],
+                'join_date' => $validated['join_date'] ?? null,
+            ]);
 
 
-        // attach logged-in teacher
-        $student->teachers()->attach(auth()->id());
-
+            // attach logged-in teacher
+            $student->teachers()->attach(auth()->id());
+        });
 
         return redirect()
             ->route('teacher.students.index')
@@ -112,6 +141,9 @@ class StudentController extends Controller
      */
     public function update(Request $request, Student $student)
     {
+
+        $student = $this->ownedStudent($student);
+
         $validated = $request->validate([
 
             'name' => [
@@ -150,12 +182,28 @@ class StudentController extends Controller
                 'nullable',
                 Rule::userWithRole('parent')
             ],
-
+            'password' => ['nullable', 'confirmed', 'min:8'],
         ]);
 
-        $student->update($validated);
+        DB::transaction(function () use ($validated, $student) {
 
+            $student->user()->update([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+            ]);
 
+            $student->update(
+                collect($validated)
+                    ->except(['password'])
+                    ->toArray()
+            );
+
+            if (!empty($validated('password'))) {
+                $student->user()->update([
+                    'password' => Hash::make($validated['password']),
+                ]);
+            }
+        });
         return redirect()
             ->route('teacher.students.show', $student)
             ->with('success', 'Student updated successfully.');
