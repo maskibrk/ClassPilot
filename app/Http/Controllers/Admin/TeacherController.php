@@ -58,7 +58,7 @@ class TeacherController extends Controller
     public function show(User $teacher)
     {
 
-        $teacher->load('students');
+        $teacher->load('students', 'AcademicClasses');
 
         return view('admin.teachers.show', compact('teacher'));
     }

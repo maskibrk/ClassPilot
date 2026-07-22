@@ -11,7 +11,6 @@ class AcademyClass extends Model
 {
     protected $fillable = [
         'name',
-        'code',
         'description',
         'teacher_id',
         'capacity',

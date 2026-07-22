@@ -1,0 +1,142 @@
+<?php
+
+namespace App\Http\Controllers\Teacher;
+
+use App\Http\Controllers\Controller;
+use App\Models\AcademyClass;
+use Illuminate\Http\Request;
+
+class AcademicClassController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $classes = auth()->user()->classes()->get();
+        return view('teacher.classes.index', compact('classes'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        $students = auth()->user()->students()->orderBy('name')->get();
+
+        return view('teacher.classes.create', compact('students'));
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => [
+                'required',
+                'string',
+                'max:255'
+            ],
+
+            'description' => [
+                'nullable',
+                'string',
+                'max:255'
+            ],
+
+            'students' => [
+                'nullable',
+                'array'
+            ],
+
+            'students.*' => [
+                'exists:students,id'
+            ],
+        ]);
+
+        $class = auth()->user()->classes()->create([
+            'name' => $validated['name'],
+            'description' => $validated['description'] ?? null,
+        ]);
+
+        $class->students()->sync($validated['students'] ?? []);
+
+        return redirect()
+            ->route('teacher.classes.index')
+            ->with('success', 'Class created successfully.');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(AcademyClass $class)
+    {
+
+        $class = $this->ownedClass($class);
+
+        $class->load('students');
+
+        return view('teacher.classes.show', compact('class'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(AcademyClass $class)
+    {
+        $class = $this->ownedClass($class);
+
+        $students = auth()->user()->students()->orderBy('name')->get();
+
+        return view('teacher.classes.edit', compact('class', 'students'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, AcademyClass $class)
+    {
+        $class = $this->ownedClass($class);
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'students' => ['nullable', 'array'],
+            'students.*' => ['exists:students,id'],
+        ]);
+
+        $class->update([
+            'name' => $validated['name'],
+            'description' => $validated['description'] ?? null,
+        ]);
+
+        $class->students()->sync($validated['students'] ?? []);
+
+        return redirect()
+            ->route('teacher.classes.show', $class)
+            ->with('success', 'Class updated successfully.');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(AcademyClass $class)
+    {
+        $class = $this->ownedClass($class);
+
+        $class->delete();
+
+        return redirect()
+            ->route('teacher.classes.index')
+            ->with('success', 'Class deleted successfully.');
+    }
+
+    //helper
+    private function ownedClass(AcademyClass $class): AcademyClass
+    {
+        return auth()->user()
+            ->classes()
+            ->findOrFail($class->id);
+    }
+}

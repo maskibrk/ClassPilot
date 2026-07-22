@@ -94,7 +94,7 @@ class User extends Authenticatable
         return $this->hasMany(Student::class, 'parent_id');
     }
 
-    public function academyClasses(): HasMany
+    public function classes(): HasMany
     {
         return $this->hasMany(
             AcademyClass::class,

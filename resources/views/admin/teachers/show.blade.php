@@ -124,7 +124,77 @@
             </div>
 
         </div>
+<div class="rounded-xl bg-white shadow dark:bg-zinc-900">
 
+    <div class="border-b p-6 dark:border-zinc-700">
+
+        <h2 class="text-xl font-semibold text-zinc-900 dark:text-white">
+            Assigned Classes
+        </h2>
+
+    </div>
+
+
+    @if($teacher->academyClasses->isEmpty())
+
+        <div class="p-6 text-zinc-500">
+            No classes assigned.
+        </div>
+
+    @else
+
+        <table class="min-w-full">
+
+            <thead class="bg-zinc-100 dark:bg-zinc-800">
+
+                <tr>
+
+                    <th class="px-6 py-3 text-left text-sm font-semibold text-zinc-700 dark:text-zinc-200">
+                        Name
+                    </th>
+
+                    <th class="px-6 py-3 text-left text-sm font-semibold text-zinc-700 dark:text-zinc-200">
+                        Code
+                    </th>
+
+                    <th class="px-6 py-3 text-left text-sm font-semibold text-zinc-700 dark:text-zinc-200">
+                        Students
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                @foreach($teacher->academyClasses as $class)
+
+                    <tr class="border-t dark:border-zinc-700">
+
+                        <td class="px-6 py-4 text-zinc-900 dark:text-zinc-100">
+                            {{ $class->name }}
+                        </td>
+
+                        <td class="px-6 py-4 text-zinc-900 dark:text-zinc-100">
+                            {{ $class->code ?? '-' }}
+                        </td>
+
+                        <td class="px-6 py-4 text-zinc-900 dark:text-zinc-100">
+                            {{ $class->students->count() }}
+                        </td>
+
+                    </tr>
+
+                @endforeach
+
+            </tbody>
+
+        </table>
+
+    @endif
+
+</div>
     </div>
 
 
