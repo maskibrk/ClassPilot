@@ -108,8 +108,7 @@ class StudentController extends Controller
         ]);
 
         $student->teachers()->attach($validated['teachers']);
-        $student->teachers()
-            ->attach($validated['teachers']);
+
 
 
         return redirect()

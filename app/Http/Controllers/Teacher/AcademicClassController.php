@@ -55,11 +55,11 @@ class AcademicClassController extends Controller
             ],
         ]);
 
-        $class = auth()->user()->classes()->create([
+        $class = auth()->user()->classes()->create(
             collect($validated)
                 ->except('students')
                 ->toArray()
-        ]);
+        );
 
         $class->students()->sync($validated['students'] ?? []);
 

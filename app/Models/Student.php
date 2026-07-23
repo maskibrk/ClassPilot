@@ -15,7 +15,6 @@ class Student extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'teacher_id',
         'parent_id',
         'user_id',
         'name',

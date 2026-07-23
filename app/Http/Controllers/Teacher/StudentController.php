@@ -49,6 +49,7 @@ class StudentController extends Controller
                 'string',
                 'max:255'
             ],
+
             'email' => [
                 'required',
                 'email',
@@ -60,7 +61,7 @@ class StudentController extends Controller
             ],
 
             'password' => [
-                'nullable',
+                'required',
                 'confirmed',
                 'min:8',
             ],

@@ -96,7 +96,17 @@
 
         </div>
 
-
+<div>
+    <label class="block font-medium">Password</label>
+    <input type="password" name="password" class="mt-1 w-full rounded-lg border p-2">
+    @error('password')
+        <p class="text-sm text-red-600">{{ $message }}</p>
+    @enderror
+</div>
+<div>
+    <label class="block font-medium">Confirm Password</label>
+    <input type="password" name="password_confirmation" class="mt-1 w-full rounded-lg border p-2">
+</div>
 
 
         <div>
