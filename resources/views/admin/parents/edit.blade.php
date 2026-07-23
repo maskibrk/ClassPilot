@@ -76,33 +76,21 @@ class="mt-1 w-full rounded-lg border p-2">
     Children
 </label>
 
-
 <select
-id="children-select"
-name="children[]"
-multiple>
+    id="children-select"
+    name="children[]"
+    multiple>
 
-
-@foreach($students as $student)
-
-<option
-value="{{ $student->id }}"
-@selected($parent->children->contains($student->id))>
-
-{{ $student->name }}
-
-</option>
-
-
-@endforeach
-
+    @foreach($students as $student)
+        <option
+            value="{{ $student->id }}"
+            @selected($parent->children->contains('id', $student->id))>
+            {{ $student->name }}
+        </option>
+    @endforeach
 
 </select>
-
-
 </div>
-
-
 
 
 <button

@@ -59,12 +59,12 @@ class ParentController extends Controller
                 'min:8',
             ],
 
-            'students' => [
+            'children' => [
                 'required',
                 'array',
             ],
 
-            'students.*' => [
+            'children.*' => [
                 'exists:students,id',
             ],
 
@@ -88,7 +88,7 @@ class ParentController extends Controller
 
         // Attach multiple children
 
-        Student::whereIn('id', $validated['students'])
+        Student::whereIn('id', $validated['children'])
             ->update([
                 'parent_id' => $parent->id,
             ]);
@@ -116,19 +116,19 @@ class ParentController extends Controller
      */
     public function edit(User $parent)
     {
-
-        Student::query()
+        $students = Student::query()
+            ->select('id', 'name', 'parent_id')
             ->where(function ($query) use ($parent) {
-                $query->whereNull('parent_id')->orWhere('parent_id', $parent->id);
+                $query->whereNull('parent_id')
+                    ->orWhere('parent_id', $parent->id);
             })
             ->orderBy('name')
-            ->get(['id', 'name']);
+            ->get();
 
-        $parent->load('children:id,name');
+        $parent->load('children:id,name,parent_id');
+
         return view('admin.parents.edit', compact('parent', 'students'));
     }
-
-
     /**
      * Update the specified resource in storage.
      */
