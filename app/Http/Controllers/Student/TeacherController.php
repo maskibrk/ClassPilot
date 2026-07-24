@@ -41,7 +41,7 @@ class TeacherController extends Controller
      */
     public function show(User $teacher)
     {
-        $teacher = $this->ownedTeacher($teacher);
+        $teacher = $this->assignedTeacher($teacher);
         return view('student.teachers.show', compact('teacher'));
     }
 
@@ -69,7 +69,7 @@ class TeacherController extends Controller
         //
     }
     //helper
-    public function ownedTeacher(User $teacher)
+    public function assignedTeacher(User $teacher)
     {
 
         return auth()->user()->teachers()->findOrFail($teacher->id);
