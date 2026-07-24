@@ -44,6 +44,14 @@ Route::middleware(['auth', 'role:teacher'])
         Route::resource('classes', TeacherAcademicClassController::class);
     });
 
+Route::middleware(['auth', 'role:teacher'])
+    ->prefix('parent')
+    ->name('parent.')
+    ->group(function () {
+
+        Route::view('dashboard', 'parent.dashboard')->name('dashboard');
+    });
+
 Route::middleware(['auth', 'role:student'])
     ->prefix('student')
     ->name('student.')
@@ -51,4 +59,5 @@ Route::middleware(['auth', 'role:student'])
 
         Route::view('dashboard', 'student.dashboard')->name('dashboard');
     });
+
 require __DIR__ . '/settings.php';

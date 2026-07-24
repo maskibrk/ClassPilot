@@ -147,7 +147,7 @@ class="w-full rounded-lg border p-2">
 
     <select
         id="children-select"
-        name="students[]"
+        name="children[]"
         multiple
         class="mt-1 w-full rounded-lg border p-2">
 

@@ -59,6 +59,12 @@ class ParentController extends Controller
                 'min:8',
             ],
 
+            'phone' => [
+                'nullable',
+                'string'
+            ],
+
+
             'children' => [
                 'required',
                 'array',
@@ -78,6 +84,8 @@ class ParentController extends Controller
             'name' => $validated['name'],
 
             'email' => $validated['email'],
+
+            'phone' => $validated['phone'],
 
             'password' => Hash::make($validated['password']),
 
