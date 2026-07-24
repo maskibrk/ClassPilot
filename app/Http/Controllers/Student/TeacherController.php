@@ -15,7 +15,7 @@ class TeacherController extends Controller
     public function index()
     {
 
-        $teachers = auth()->user()->teachers()->orderBy('name')->get();
+        $teachers = auth()->user()->student->teachers()->orderBy('name')->get();
 
         return view('student.teachers.index', compact('teachers'));
     }

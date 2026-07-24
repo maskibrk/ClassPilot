@@ -75,9 +75,7 @@ class User extends Authenticatable
         return $this->hasMany(Lesson::class, 'teacher_id');
     }
 
-    // If this user IS a student account (role = student):
-    // link back to their tutoring profile.
-    public function studentProfile()
+    public function student()
     {
         return $this->hasOne(Student::class, 'user_id');
     }

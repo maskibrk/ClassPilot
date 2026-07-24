@@ -140,12 +140,12 @@
 
 
             <flux:sidebar.item
-                icon="book-open"
-                href="#"
-                wire:navigate>
-                Courses
+            icon="users"
+            :href="route('student.teachers.index')"
+            :current="request()->routeIs('student.teachers.*')"
+            wire:navigate>
+            My Teachers
             </flux:sidebar.item>
-
 
         </flux:sidebar.group>
 
