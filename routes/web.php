@@ -9,8 +9,8 @@ use App\Http\Controllers\Admin\ParentController;
 use App\Http\Controllers\Teacher\AcademicClassController as TeacherAcademicClassController;
 use App\Http\Controllers\Admin\AcademicClassController as AdminAcademicClassController;
 use App\Http\Controllers\Parent\ChildrenController;
+use App\Http\Controllers\Student\TeacherController as StudentTeacherController;
 use App\Models\Student;
-use Illuminate\Routing\Route as RoutingRoute;
 
 Route::view('/', 'welcome')->name('home');
 
@@ -61,6 +61,7 @@ Route::middleware(['auth', 'role:student'])
     ->group(function () {
 
         Route::view('dashboard', 'student.dashboard')->name('dashboard');
+        Route::resource('teachers', StudentTeacherController::class)->only('index', 'show');
     });
 
 require __DIR__ . '/settings.php';
