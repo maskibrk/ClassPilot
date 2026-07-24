@@ -114,7 +114,8 @@
 
             <flux:sidebar.item
                 icon="academic-cap"
-                href="#"
+                :href="route('parent.children.index')"
+                :current="request()->routeIs('parent.children.*')"
                 wire:navigate>
                 My Children
             </flux:sidebar.item>
