@@ -72,6 +72,6 @@ class TeacherController extends Controller
     public function assignedTeacher(User $teacher)
     {
 
-        return auth()->user()->teachers()->findOrFail($teacher->id);
+        return auth()->user()->student->teachers()->findOrFail($teacher->id);
     }
 }
