@@ -147,6 +147,14 @@
             My Teachers
             </flux:sidebar.item>
 
+            <flux:sidebar.item
+            icon="academic-cap"
+            :href="route('student.classes.index')"
+            :current="request()->routeIs('student.classes.*')"
+            wire:navigate>
+            My Classes
+            </flux:sidebar.item>
+
         </flux:sidebar.group>
 
 

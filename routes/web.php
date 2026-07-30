@@ -10,6 +10,7 @@ use App\Http\Controllers\Teacher\AcademicClassController as TeacherAcademicClass
 use App\Http\Controllers\Admin\AcademicClassController as AdminAcademicClassController;
 use App\Http\Controllers\Parent\ChildrenController;
 use App\Http\Controllers\Student\TeacherController as StudentTeacherController;
+use App\Http\Controllers\Student\ClassController;
 use App\Models\Student;
 
 Route::view('/', 'welcome')->name('home');
@@ -62,6 +63,7 @@ Route::middleware(['auth', 'role:student'])
 
         Route::view('dashboard', 'student.dashboard')->name('dashboard');
         Route::resource('teachers', StudentTeacherController::class)->only('index', 'show');
+        Route::resource('classes', ClassController::class)->only('index', 'show');
     });
 
 require __DIR__ . '/settings.php';
