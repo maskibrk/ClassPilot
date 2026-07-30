@@ -52,7 +52,7 @@
 
 
                     <th class="px-6 py-3 text-left">
-                        Code
+                        Teacher
                     </th>
 
 
@@ -101,7 +101,13 @@
 
                     <td class="px-6 py-4">
 
-                        {{ $class->code }}
+                        <a
+                            href="{{ route('admin.teachers.show', $class->teacher) }}"
+                            class="font-medium text-blue-600 hover:underline dark:text-blue-400">
+
+
+                        {{ $class->teacher->name }}
+                        </a>
 
                     </td>
 
