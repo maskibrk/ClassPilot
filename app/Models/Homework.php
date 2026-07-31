@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Homework extends Model
 {
     use SoftDeletes;
-
+    protected $table = 'homeworks';
     protected $fillable = [
         'academy_class_id',
         'title',

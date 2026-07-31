@@ -46,7 +46,7 @@ Route::middleware(['auth', 'role:teacher'])
         Route::resource('students', TeacherStudentController::class);
 
         Route::resource('classes', TeacherAcademicClassController::class);
-        Route::resource('homeworks', HomeworkController::class)->only('index');
+        Route::resource('homeworks', HomeworkController::class);
     });
 
 Route::middleware(['auth', 'role:parent'])

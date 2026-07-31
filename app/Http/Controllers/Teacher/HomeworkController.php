@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Teacher;
 
 use App\Models\Homework;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class HomeworkController extends Controller
 {
@@ -12,8 +13,13 @@ class HomeworkController extends Controller
      */
     public function index()
     {
-        $homeworks = auth()->user()->classes()->homeworks()->get();
-        return view('homeworks', compact('homeworks'));
+        $homeworks = Homework::whereHas('academyClass', function ($query) {
+            $query->where('teacher_id', auth()->id());
+        })
+            ->with('academyClass')
+            ->latest()
+            ->get();
+        return view('teacher.homeworks.index', compact('homeworks'));
     }
 
     /**
@@ -21,7 +27,12 @@ class HomeworkController extends Controller
      */
     public function create()
     {
-        //
+        $classes = auth()->user()
+            ->classes()
+            ->orderBy('name')
+            ->get();
+
+        return view('teacher.homeworks.create', compact('classes'));
     }
 
     /**
@@ -29,7 +40,42 @@ class HomeworkController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'academy_class_id' => [
+                'required',
+                'exists:academy_classes,id',
+            ],
+
+            'title' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+
+            'instructions' => [
+                'nullable',
+                'string',
+            ],
+
+            'due_date' => [
+                'nullable',
+                'date',
+            ],
+        ]);
+
+        $class = auth()->user()
+            ->classes()
+            ->findOrFail($validated['academy_class_id']);
+
+        $class->homeworks()->create(
+            collect($validated)
+                ->except('academy_class_id')
+                ->toArray()
+        );
+
+        return redirect()
+            ->route('teacher.homeworks.index')
+            ->with('success', 'Homework created successfully.');
     }
 
     /**
@@ -37,7 +83,9 @@ class HomeworkController extends Controller
      */
     public function show(Homework $homework)
     {
-        //
+
+        $homework = Homework::where('id', $homework->id)->firstOrFail();
+        return view('teacher.homeworks.show', compact('homework'));
     }
 
     /**
@@ -45,7 +93,15 @@ class HomeworkController extends Controller
      */
     public function edit(Homework $homework)
     {
-        //
+
+        $homework = Homework::where('id', $homework->id)->firstOrFail();
+
+        $classes = auth()->user()
+            ->classes()
+            ->orderBy('name')
+            ->get();
+
+        return view('teacher.homeworks.edit', compact('homework', 'classes'));
     }
 
     /**
