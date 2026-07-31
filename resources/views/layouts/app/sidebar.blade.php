@@ -94,6 +94,14 @@
             My Classes
             </flux:sidebar.item>
 
+            <flux:sidebar.item
+                icon="document-text"
+                :href="route('teacher.homeworks.index')"
+                :current="request()->routeIs('teacher.homeworks.*')"
+                wire:navigate>
+                Homework
+            </flux:sidebar.item>
+
         </flux:sidebar.group>
 
 
@@ -153,6 +161,14 @@
             :current="request()->routeIs('student.classes.*')"
             wire:navigate>
             My Classes
+            </flux:sidebar.item>
+
+            <flux:sidebar.item
+                icon="document-text"
+                :href="route('student.homeworks.index')"
+                :current="request()->routeIs('student.homeworks.*')"
+                wire:navigate>
+                Homework
             </flux:sidebar.item>
 
         </flux:sidebar.group>
