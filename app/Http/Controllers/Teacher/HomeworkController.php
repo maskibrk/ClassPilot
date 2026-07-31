@@ -109,7 +109,43 @@ class HomeworkController extends Controller
      */
     public function update(Request $request, Homework $homework)
     {
-        //
+
+        $validated = $request->validate([
+            'academy_class_id' => [
+                'required',
+                'exists:academy_classes,id',
+            ],
+
+            'title' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+
+            'instructions' => [
+                'nullable',
+                'string',
+            ],
+
+            'due_date' => [
+                'nullable',
+                'date',
+            ],
+        ]);
+
+        $class = auth()->user()
+            ->classes()
+            ->findOrFail($validated['academy_class_id']);
+
+        $class->homeworks()->update(
+            collect($validated)
+                ->except('academy_class_id')
+                ->toArray()
+        );
+
+        return redirect()
+            ->route('teacher.homeworks.index')
+            ->with('success', 'Homework created successfully.');
     }
 
     /**
@@ -117,6 +153,11 @@ class HomeworkController extends Controller
      */
     public function destroy(Homework $homework)
     {
-        //
+        $homework = Homework::where('id', $homework->id)->firstOrFail();
+        $homework->delete();
+
+        return redirect()
+            ->route('teacher.homeworks.index')
+            ->with('success', 'Homework deleted successfully.');
     }
 }
