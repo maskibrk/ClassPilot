@@ -6,29 +6,35 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
         Schema::create('homeworks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('teacher_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignId('student_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('lesson_id')->nullable()->constrained()->nullOnDelete();
+
+            $table->foreignId('academy_class_id')
+                ->constrained()
+                ->cascadeOnDelete();
 
             $table->string('title');
             $table->text('instructions')->nullable();
             $table->date('due_date')->nullable();
-            $table->enum('status', ['assigned', 'submitted', 'reviewed', 'completed'])
-                ->default('assigned');
+
             $table->timestamps();
             $table->softDeletes();
 
-            $table->index(['teacher_id', 'status']);
-            $table->index(['student_id', 'due_date']);
+            $table->index('academy_class_id');
+            $table->index('due_date');
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
-        Schema::dropIfExists('homeworks');
+        //
     }
 };

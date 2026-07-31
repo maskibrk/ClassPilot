@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class AcademyClass extends Model
 {
@@ -27,5 +28,9 @@ class AcademyClass extends Model
             Student::class,
             'academy_class_student'
         );
+    }
+    public function homeworks(): HasMany
+    {
+        return $this->hasMany(Homework::class);
     }
 }

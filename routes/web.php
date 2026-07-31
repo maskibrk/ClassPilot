@@ -7,6 +7,7 @@ use App\Http\Controllers\Teacher\StudentController as TeacherStudentController;
 use App\Http\Controllers\Admin\TeacherController;
 use App\Http\Controllers\Admin\ParentController;
 use App\Http\Controllers\Teacher\AcademicClassController as TeacherAcademicClassController;
+use App\Http\Controllers\Teacher\HomeworkController;
 use App\Http\Controllers\Admin\AcademicClassController as AdminAcademicClassController;
 use App\Http\Controllers\Parent\ChildrenController;
 use App\Http\Controllers\Student\TeacherController as StudentTeacherController;
@@ -45,6 +46,7 @@ Route::middleware(['auth', 'role:teacher'])
         Route::resource('students', TeacherStudentController::class);
 
         Route::resource('classes', TeacherAcademicClassController::class);
+        Route::resource('homeworks', HomeworkController::class)->only('index');
     });
 
 Route::middleware(['auth', 'role:parent'])
