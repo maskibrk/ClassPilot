@@ -11,6 +11,7 @@
     <form
         method="POST"
         action="{{ route('teacher.homeworks.update', $homework) }}"
+enctype="multipart/form-data"
         class="space-y-5 rounded-xl bg-white p-6 shadow dark:bg-zinc-900">
 
         @csrf

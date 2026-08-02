@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 
@@ -16,6 +17,7 @@ class Homework extends Model
         'title',
         'instructions',
         'due_date',
+        'file_path',
     ];
 
     protected $casts = [
@@ -25,5 +27,9 @@ class Homework extends Model
     public function academyClass(): BelongsTo
     {
         return $this->belongsTo(AcademyClass::class);
+    }
+    public function submissions(): HasMany
+    {
+        return $this->hasMany(HomeworkSubmission::class);
     }
 }

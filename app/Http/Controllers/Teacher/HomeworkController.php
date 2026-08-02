@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Teacher;
 use App\Models\Homework;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
+use function Pest\Laravel\put;
 
 class HomeworkController extends Controller
 {
@@ -40,6 +43,8 @@ class HomeworkController extends Controller
      */
     public function store(Request $request)
     {
+
+        $filePath = null;
         $validated = $request->validate([
             'academy_class_id' => [
                 'required',
@@ -56,6 +61,12 @@ class HomeworkController extends Controller
                 'nullable',
                 'string',
             ],
+            'file' => [
+                'nullable',
+                'file',
+                'mimes:pdf,doc,docx,ppt,pptx,png,jpg,jpeg,zip',
+                'max:10240',
+            ],
 
             'due_date' => [
                 'nullable',
@@ -63,15 +74,26 @@ class HomeworkController extends Controller
             ],
         ]);
 
+
         $class = auth()->user()
             ->classes()
             ->findOrFail($validated['academy_class_id']);
 
+        if ($request->hasFile('file')) {
+
+            $filePath = $request
+                ->file('file')
+                ->store('homeworks');
+        }
+
         $class->homeworks()->create(
             collect($validated)
-                ->except('academy_class_id')
+                ->except('academy_class_id', 'file')
+                ->put('file_path', $filePath)
                 ->toArray()
         );
+
+
 
         return redirect()
             ->route('teacher.homeworks.index')
@@ -109,43 +131,63 @@ class HomeworkController extends Controller
      */
     public function update(Request $request, Homework $homework)
     {
+        $homework = $this->ownedHomework($homework);
 
         $validated = $request->validate([
             'academy_class_id' => [
                 'required',
                 'exists:academy_classes,id',
             ],
-
             'title' => [
                 'required',
                 'string',
                 'max:255',
             ],
-
             'instructions' => [
                 'nullable',
                 'string',
             ],
-
+            'file' => [
+                'nullable',
+                'file',
+                'mimes:pdf,doc,docx,ppt,pptx,xls,xlsx,png,jpg,jpeg,zip',
+                'max:10240',
+            ],
             'due_date' => [
                 'nullable',
                 'date',
             ],
         ]);
 
-        $class = auth()->user()
+        // Ensure the selected class belongs to this teacher.
+        auth()->user()
             ->classes()
             ->findOrFail($validated['academy_class_id']);
 
-        $class->homeworks()->update(
-            collect($validated)
-                ->except('academy_class_id')
-                ->toArray()
-        );
+
+        $filePath = $homework->file_path;
+        if ($request->hasFile('file')) {
+
+            if ($filePath) {
+                Storage::delete($filePath);
+            }
+
+            $filePath = $request->file('file')->store('homeworks');
+        }
+
+        DB::transaction(function () use ($homework, $validated, $filePath) {
+
+            $homework->update(
+                collect($validated)
+                    ->except('file')
+                    ->put('file_path', $filePath)
+                    ->toArray()
+            );
+        });
 
         return redirect()
-            ->route('teacher.homeworks.index')
-            ->with('success', 'Homework created successfully.');
+            ->route('teacher.homeworks.show', $homework)
+            ->with('success', 'Homework updated successfully.');
     }
 
     /**
@@ -159,5 +201,22 @@ class HomeworkController extends Controller
         return redirect()
             ->route('teacher.homeworks.index')
             ->with('success', 'Homework deleted successfully.');
+    }
+    public function preview(Homework $homework)
+    {
+        $homework = $this->ownedHomework($homework);
+
+        abort_unless($homework->file_path, 404);
+
+        return Storage::response($homework->file_path);
+    }
+    private function ownedHomework(Homework $homework): Homework
+    {
+        return Homework::whereKey($homework->id)
+            ->whereHas('academyClass', function ($query) {
+                $query->where('teacher_id', auth()->id());
+            })
+            ->with('academyClass')
+            ->firstOrFail();
     }
 }

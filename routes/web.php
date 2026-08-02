@@ -49,6 +49,10 @@ Route::middleware(['auth', 'role:teacher'])
 
         Route::resource('classes', TeacherAcademicClassController::class);
         Route::resource('homeworks', TeacherHomeworkController::class);
+        Route::get(
+            'homeworks/{homework}/preview',
+            [TeacherHomeworkController::class, 'preview']
+        )->name('homeworks.preview');
     });
 
 Route::middleware(['auth', 'role:parent'])
