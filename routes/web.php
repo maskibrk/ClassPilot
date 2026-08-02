@@ -7,11 +7,13 @@ use App\Http\Controllers\Teacher\StudentController as TeacherStudentController;
 use App\Http\Controllers\Admin\TeacherController;
 use App\Http\Controllers\Admin\ParentController;
 use App\Http\Controllers\Teacher\AcademicClassController as TeacherAcademicClassController;
-use App\Http\Controllers\Teacher\HomeworkController;
+use App\Http\Controllers\Teacher\HomeworkController as TeacherHomeworkController;
 use App\Http\Controllers\Admin\AcademicClassController as AdminAcademicClassController;
 use App\Http\Controllers\Parent\ChildrenController;
 use App\Http\Controllers\Student\TeacherController as StudentTeacherController;
 use App\Http\Controllers\Student\ClassController;
+use App\Http\Controllers\Student\HomeworkController;
+use App\Models\Homework;
 use App\Models\Student;
 
 Route::view('/', 'welcome')->name('home');
@@ -46,7 +48,7 @@ Route::middleware(['auth', 'role:teacher'])
         Route::resource('students', TeacherStudentController::class);
 
         Route::resource('classes', TeacherAcademicClassController::class);
-        Route::resource('homeworks', HomeworkController::class);
+        Route::resource('homeworks', TeacherHomeworkController::class);
     });
 
 Route::middleware(['auth', 'role:parent'])
@@ -66,6 +68,7 @@ Route::middleware(['auth', 'role:student'])
         Route::view('dashboard', 'student.dashboard')->name('dashboard');
         Route::resource('teachers', StudentTeacherController::class)->only('index', 'show');
         Route::resource('classes', ClassController::class)->only('index', 'show');
+        Route::resource('homeworks', HomeworkController::class)->only('index', 'show');
     });
 
 require __DIR__ . '/settings.php';
