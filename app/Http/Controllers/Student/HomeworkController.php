@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Student;
 use App\Models\Homework;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\HigherOrderWhenProxy;
 
 class HomeworkController extends Controller
@@ -77,11 +78,25 @@ class HomeworkController extends Controller
 
     private function ownedHomework(Homework $homework): Homework
     {
-        return Homework::whereKey($homework->id)
-            ->whereHas('academyClass.students', function ($query) {
-                $query->where('students.id', auth()->user()->student->id);
-            })
-            ->with('academyClass.teacher')
-            ->firstOrFail();
+        abort_unless(
+            $homework->academyClass()
+                ->whereHas('students', function ($query) {
+                    $query->whereKey(auth()->user()->student->id);
+                })
+                ->exists(),
+            404
+        );
+
+        $homework->loadMissing('academyClass.teacher');
+
+        return $homework;
+    }
+    public function preview(Homework $homework)
+    {
+        $homework = $this->ownedHomework($homework);
+
+        abort_unless($homework->file_path, 404);
+
+        return Storage::response($homework->file_path);
     }
 }

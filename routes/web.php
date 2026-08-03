@@ -73,6 +73,11 @@ Route::middleware(['auth', 'role:student'])
         Route::resource('teachers', StudentTeacherController::class)->only('index', 'show');
         Route::resource('classes', ClassController::class)->only('index', 'show');
         Route::resource('homeworks', HomeworkController::class)->only('index', 'show');
+
+        Route::get(
+            'homeworks/{homework}/preview',
+            [HomeworkController::class, 'preview']
+        )->name('homeworks.preview');
     });
 
 require __DIR__ . '/settings.php';
