@@ -210,13 +210,16 @@ class HomeworkController extends Controller
 
         return Storage::response($homework->file_path);
     }
+
     private function ownedHomework(Homework $homework): Homework
     {
-        return Homework::whereKey($homework->id)
-            ->whereHas('academyClass', function ($query) {
-                $query->where('teacher_id', auth()->id());
-            })
-            ->with('academyClass')
-            ->firstOrFail();
+        abort_unless(
+            $homework->academyClass()->where('teacher_id', auth()->user()->id)
+                ->exists(),
+            404
+        );
+        $homework->loadMissing('academyClass');
+
+        return $homework;
     }
 }

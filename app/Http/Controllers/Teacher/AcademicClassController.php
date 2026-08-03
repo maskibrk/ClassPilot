@@ -136,8 +136,11 @@ class AcademicClassController extends Controller
     //helper
     private function ownedClass(AcademyClass $class): AcademyClass
     {
-        return auth()->user()
-            ->classes()
-            ->findOrFail($class->id);
+        abort_if(
+            $class->teacher_id !== auth()->user()->id,
+            404
+        );
+
+        return $class;
     }
 }
