@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Teacher;
 
 use App\Models\Homework;
+use App\Models\AcademyClass;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\DB;
+
 use function Pest\Laravel\put;
 
 class HomeworkController extends Controller
@@ -30,6 +32,8 @@ class HomeworkController extends Controller
      */
     public function create()
     {
+        Gate::authorize('create', Homework::class);
+
         $classes = auth()->user()
             ->classes()
             ->orderBy('name')
@@ -43,7 +47,6 @@ class HomeworkController extends Controller
      */
     public function store(Request $request)
     {
-
         $filePath = null;
         $validated = $request->validate([
             'academy_class_id' => [
@@ -75,10 +78,9 @@ class HomeworkController extends Controller
         ]);
 
 
-        $class = auth()->user()
-            ->classes()
-            ->findOrFail($validated['academy_class_id']);
+        $class = AcademyClass::findOrFail($validated['academy_class_id']);
 
+        Gate::authorize('update', $class);
         if ($request->hasFile('file')) {
 
             $filePath = $request
@@ -106,7 +108,7 @@ class HomeworkController extends Controller
     public function show(Homework $homework)
     {
 
-        $homework = Homework::where('id', $homework->id)->firstOrFail();
+        Gate::authorize('view', $homework);
         return view('teacher.homeworks.show', compact('homework'));
     }
 
@@ -116,8 +118,7 @@ class HomeworkController extends Controller
     public function edit(Homework $homework)
     {
 
-        $homework = Homework::where('id', $homework->id)->firstOrFail();
-
+        Gate::authorize('update', $homework);
         $classes = auth()->user()
             ->classes()
             ->orderBy('name')
@@ -131,7 +132,6 @@ class HomeworkController extends Controller
      */
     public function update(Request $request, Homework $homework)
     {
-        $homework = $this->ownedHomework($homework);
 
         $validated = $request->validate([
             'academy_class_id' => [
@@ -160,10 +160,10 @@ class HomeworkController extends Controller
         ]);
 
         // Ensure the selected class belongs to this teacher.
-        auth()->user()
-            ->classes()
-            ->findOrFail($validated['academy_class_id']);
 
+        $class = AcademyClass::findOrFail($validated['academy_class_id']);
+
+        Gate::authorize('update', $class);
 
         $filePath = $homework->file_path;
         if ($request->hasFile('file')) {
@@ -175,15 +175,13 @@ class HomeworkController extends Controller
             $filePath = $request->file('file')->store('homeworks');
         }
 
-        DB::transaction(function () use ($homework, $validated, $filePath) {
 
-            $homework->update(
-                collect($validated)
-                    ->except('file')
-                    ->put('file_path', $filePath)
-                    ->toArray()
-            );
-        });
+        $homework->update(
+            collect($validated)
+                ->except('file')
+                ->put('file_path', $filePath)
+                ->toArray()
+        );
 
         return redirect()
             ->route('teacher.homeworks.show', $homework)
@@ -195,7 +193,8 @@ class HomeworkController extends Controller
      */
     public function destroy(Homework $homework)
     {
-        $homework = Homework::where('id', $homework->id)->firstOrFail();
+
+        Gate::authorize('delete', $homework);
         $homework->delete();
 
         return redirect()
@@ -204,22 +203,9 @@ class HomeworkController extends Controller
     }
     public function preview(Homework $homework)
     {
-        $homework = $this->ownedHomework($homework);
-
+        Gate::authorize('view', $homework);
         abort_unless($homework->file_path, 404);
 
         return Storage::response($homework->file_path);
-    }
-
-    private function ownedHomework(Homework $homework): Homework
-    {
-        abort_unless(
-            $homework->academyClass()->where('teacher_id', auth()->user()->id)
-                ->exists(),
-            404
-        );
-        $homework->loadMissing('academyClass');
-
-        return $homework;
     }
 }

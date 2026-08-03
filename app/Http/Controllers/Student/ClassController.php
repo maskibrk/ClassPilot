@@ -7,6 +7,8 @@ use App\Models\AcademyClass;
 use App\Models\Student;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Gate;
+
 class ClassController extends Controller
 {
     /**
@@ -40,7 +42,7 @@ class ClassController extends Controller
      */
     public function show(AcademyClass $class)
     {
-        $class = auth()->user()->student->classes()->findOrfail($class->id);
+        Gate::authorize('view', $class);
         return view('student.classes.show', compact('class'));
     }
 

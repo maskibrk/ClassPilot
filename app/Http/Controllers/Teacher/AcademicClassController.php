@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Teacher;
 use App\Http\Controllers\Controller;
 use App\Models\AcademyClass;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use App\Policies\AcademyClassPolicy;
 
 class AcademicClassController extends Controller
 {
@@ -74,8 +76,7 @@ class AcademicClassController extends Controller
     public function show(AcademyClass $class)
     {
 
-        $class = $this->ownedClass($class);
-
+        Gate::authorize('view', $class);
         $class->load('students');
 
         return view('teacher.classes.show', compact('class'));
@@ -86,7 +87,7 @@ class AcademicClassController extends Controller
      */
     public function edit(AcademyClass $class)
     {
-        $class = $this->ownedClass($class);
+        Gate::authorize('view', $class);
 
         $students = auth()->user()->students()->orderBy('name')->get();
 
@@ -98,7 +99,8 @@ class AcademicClassController extends Controller
      */
     public function update(Request $request, AcademyClass $class)
     {
-        $class = $this->ownedClass($class);
+
+        Gate::authorize('update', $class);
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -124,23 +126,12 @@ class AcademicClassController extends Controller
      */
     public function destroy(AcademyClass $class)
     {
-        $class = $this->ownedClass($class);
 
+        Gate::authorize('delete', $class);
         $class->delete();
 
         return redirect()
             ->route('teacher.classes.index')
             ->with('success', 'Class deleted successfully.');
-    }
-
-    //helper
-    private function ownedClass(AcademyClass $class): AcademyClass
-    {
-        abort_if(
-            $class->teacher_id !== auth()->user()->id,
-            404
-        );
-
-        return $class;
     }
 }
