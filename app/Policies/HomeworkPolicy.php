@@ -26,7 +26,7 @@ class HomeworkPolicy
         }
         if ($user->isStudent()) {
             return $homework->academyClass
-                ->student()
+                ->students()
                 ->whereKey($user->student->id)
                 ->exists();
         }
