@@ -17,7 +17,7 @@ class StudentPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->isTeacher();
+        return $user->isTeacher() || $user->isParent();
     }
 
     /**
