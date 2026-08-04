@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Student;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
@@ -17,6 +18,8 @@ class StudentController extends Controller
      */
     public function index()
     {
+
+        Gate::authorize('viewAny', Student::class);
         $students = Student::with(['teachers', 'parent'])->latest()->get();
         return view("admin.students.index", compact('students'));
     }
@@ -27,6 +30,7 @@ class StudentController extends Controller
      */
     public function create()
     {
+        Gate::authorize('create', Student::class);
         return view('admin.students.create', [
             'teachers' => User::teachers()->get(),
             'parents' => User::parents()->get(),
@@ -38,6 +42,7 @@ class StudentController extends Controller
     public function store(Request $request)
     {
 
+        Gate::authorize('create', Student::class);
         $validated = $request->validate([
             'teachers' => [
                 'required',
@@ -120,6 +125,8 @@ class StudentController extends Controller
      */
     public function show(Student $student)
     {
+
+        Gate::authorize('view', Student::class);
         $student->load([
             'teachers',
             'parent',
@@ -133,6 +140,7 @@ class StudentController extends Controller
     public function edit(Student $student)
     {
 
+        Gate::authorize('update', Student::class);
         $teachers = User::teachers()
             ->select('id', 'name')
             ->orderBy('name')
@@ -153,6 +161,8 @@ class StudentController extends Controller
      */
     public function update(Request $request, Student $student)
     {
+
+        Gate::authorize('update', Student::class);
         $validated = $request->validate([
 
             'name' => [
@@ -240,10 +250,15 @@ class StudentController extends Controller
      */
     public function destroy(Student $student)
     {
-        $student->teachers()->detach();
-        $user = $student->user;
-        $student->delete();
-        $user?->delete();
+
+        Gate::authorize('delete', Student::class);
+
+        DB::transaction(function () use ($student) {
+            $student->teachers()->detach();
+            $user = $student->user;
+            $student->delete();
+            $user?->delete();
+        });
 
         return redirect()
             ->route('admin.students.index')

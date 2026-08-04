@@ -18,6 +18,8 @@ class HomeworkController extends Controller
      */
     public function index()
     {
+
+        Gate::authorize('viewAny', Homework::class);
         $homeworks = Homework::whereHas('academyClass', function ($query) {
             $query->where('teacher_id', auth()->id());
         })

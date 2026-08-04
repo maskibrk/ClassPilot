@@ -15,7 +15,7 @@ class AcademyClassPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->isTeacher() || $user->isStudent();
     }
 
     /**

@@ -7,10 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\Student;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Hash;
 
-use function PHPUnit\Framework\isEmpty;
 
 class StudentController extends Controller
 {
@@ -19,6 +18,7 @@ class StudentController extends Controller
      */
     public function index()
     {
+        Gate::authorize('viewAny', Student::class);
         $students = auth()->user()->students()->latest()->get();
         return view("teacher.students.index", compact('students'));
     }
@@ -29,6 +29,8 @@ class StudentController extends Controller
      */
     public function create(Request $request)
     {
+
+        Gate::authorize('create', Student::class);
         $parents = User::parents()->get();
 
         return view('teacher.students.create', compact('parents'));
@@ -39,6 +41,8 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
+
+        Gate::authorize('create', Student::class);
         $validated = $request->validate([
             'parent_id' => [
                 'nullable',
@@ -85,7 +89,7 @@ class StudentController extends Controller
             $user = User::create([
                 'name' => $validated['name'],
                 'email' => $validated['email'],
-                'password' => Hash::make($validated['password']),
+                'password' => $validated['password'],
                 'role' => 'student',
             ]);
 
@@ -114,7 +118,8 @@ class StudentController extends Controller
      */
     public function show(Student $student)
     {
-        $student = $this->ownedStudent($student);
+
+        Gate::authorize('view', $student);
 
         $student->load('parent');
 
@@ -127,7 +132,7 @@ class StudentController extends Controller
     public function edit(Student $student)
     {
 
-        $student = $this->ownedStudent($student);
+        Gate::authorize('update', $student);
 
         $parents = User::parents()
             ->select('id', 'name')
@@ -143,7 +148,7 @@ class StudentController extends Controller
     public function update(Request $request, Student $student)
     {
 
-        $student = $this->ownedStudent($student);
+        Gate::authorize('update', $student);
 
         $validated = $request->validate([
 
@@ -199,9 +204,9 @@ class StudentController extends Controller
                     ->toArray()
             );
 
-            if (!empty($validated('password'))) {
+            if (!empty($validated['password'])) {
                 $student->user()->update([
-                    'password' => Hash::make($validated['password']),
+                    'password' => $validated['password'],
                 ]);
             }
         });
@@ -215,21 +220,20 @@ class StudentController extends Controller
      */
     public function destroy(Student $student)
     {
-        $student = $this->ownedStudent($student);
-        $student->teachers()->detach(auth()->id());
+        Gate::authorize('delete', $student);
 
-        /* $student->delete(); */
+
+        DB::transaction(function () use ($student) {
+            $student->teachers()->detach(auth()->id());
+
+            if (! $student->teachers()->exists()) {
+                $student->user()->delete();
+                $student->delete();
+            }
+        });
 
         return redirect()
             ->route('teacher.students.index')
             ->with('success', 'Student deleted/detached for the moment successfully.');
-    }
-    //helper
-    private function ownedStudent(Student $student): Student
-    {
-
-        return auth()->user()
-            ->students()
-            ->findOrFail($student->id);
     }
 }

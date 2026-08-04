@@ -5,21 +5,11 @@ namespace App\Policies;
 use App\Models\Student;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
+use App\Policies\Concerns\AdminBypass;
 
 class StudentPolicy
 {
-
-    /**
-     * Perform pre-authorization checks.
-     */
-    public function before(User $user, string $ability): ?bool
-    {
-        if ($user->isAdmin()) {
-            return true;
-        }
-
-        return null;
-    }
+    use AdminBypass;
 
 
     /**
@@ -27,7 +17,7 @@ class StudentPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->isTeacher();
     }
 
     /**
@@ -35,6 +25,12 @@ class StudentPolicy
      */
     public function view(User $user, Student $student): bool
     {
+        if ($user->isTeacher()) {
+            return $user->students()->whereKey($student->id)->exists();
+        }
+        if ($user->isParent()) {
+            return $user->children()->whereKey($student->id)->exists();
+        }
         return false;
     }
 
@@ -43,7 +39,7 @@ class StudentPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->isTeacher();
     }
 
     /**
@@ -51,7 +47,8 @@ class StudentPolicy
      */
     public function update(User $user, Student $student): bool
     {
-        return false;
+
+        return $user->isTeacher() && $this->view($user, $student);;
     }
 
     /**
@@ -59,7 +56,8 @@ class StudentPolicy
      */
     public function delete(User $user, Student $student): bool
     {
-        return false;
+
+        return $this->update($user, $student);
     }
 
     /**

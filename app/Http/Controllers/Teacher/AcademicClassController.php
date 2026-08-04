@@ -15,6 +15,8 @@ class AcademicClassController extends Controller
      */
     public function index()
     {
+
+        Gate::authorize('viewAny', AcademyClass::class);
         $classes = auth()->user()->classes()->get();
         return view('teacher.classes.index', compact('classes'));
     }
