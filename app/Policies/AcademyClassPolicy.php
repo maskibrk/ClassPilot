@@ -5,9 +5,11 @@ namespace App\Policies;
 use App\Models\AcademyClass;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
+use App\Policies\Concerns\AdminBypass;
 
 class AcademyClassPolicy
 {
+    use AdminBypass;
     /**
      * Determine whether the user can view any models.
      */
@@ -42,7 +44,7 @@ class AcademyClassPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->isTeacher();
     }
 
     /**

@@ -24,6 +24,8 @@ class AcademicClassController extends Controller
      */
     public function create()
     {
+
+        Gate::authorize('create', AcademyClass::class);
         $students = auth()->user()->students()->orderBy('name')->get();
 
         return view('teacher.classes.create', compact('students'));
@@ -34,6 +36,8 @@ class AcademicClassController extends Controller
      */
     public function store(Request $request)
     {
+
+        Gate::authorize('create', AcademyClass::class);
         $validated = $request->validate([
             'name' => [
                 'required',

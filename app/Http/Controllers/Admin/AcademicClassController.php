@@ -7,6 +7,7 @@ use App\Models\AcademyClass;
 use App\Models\Student;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 
 class AcademicClassController extends Controller
@@ -25,6 +26,8 @@ class AcademicClassController extends Controller
      */
     public function create()
     {
+
+        Gate::authorize('create', AcademyClass::class);
         $students = Student::orderBy('name')->get();
         $teachers = User::teachers()->orderBy('name')->get();
 
@@ -36,6 +39,8 @@ class AcademicClassController extends Controller
      */
     public function store(Request $request)
     {
+
+        Gate::authorize('create', AcademyClass::class);
         $validated = $request->validate([
 
             'teacher_id' => [
@@ -85,6 +90,8 @@ class AcademicClassController extends Controller
     public function show(AcademyClass $class)
     {
 
+        Gate::authorize('view', $class);
+
         $class->load('teacher', 'students');
 
         return view('admin.classes.show', compact('class'));
@@ -96,6 +103,7 @@ class AcademicClassController extends Controller
     public function edit(AcademyClass $class)
     {
 
+        Gate::authorize('update', $class);
         $class->load('teacher', 'students');
 
         $teachers = User::teachers()->orderBy('name')->get();
@@ -124,6 +132,7 @@ class AcademicClassController extends Controller
             'students.*' => ['exists:students,id'],
         ]);
 
+        Gate::authorize('update', $class);
         $class->update(
             collect($validated)
                 ->except('students')
@@ -143,6 +152,7 @@ class AcademicClassController extends Controller
     public function destroy(AcademyClass $class)
     {
 
+        Gate::authorize('delete', $class);
         $class->delete();
 
         return redirect()
