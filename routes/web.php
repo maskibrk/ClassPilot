@@ -86,7 +86,7 @@ Route::post(
     [HomeworkSubmissionController::class, 'store']
 )->name('submissions.store');
 Route::resource('submissions', HomeworkSubmissionController::class)
-    ->except(['create', 'store']);
+    ->except(['create', 'store','show']);
 
 
         Route::get(

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Student extends Model
@@ -33,40 +34,58 @@ class Student extends Model
     {
         return $this->belongsTo(User::class);
     }
-
+    /**
+     * @return BelongsToMany<Subject,Student,Pivot>
+     */
     public function subjects(): BelongsToMany
     {
         return $this->belongsToMany(Subject::class);
     }
-
+    /**
+     * @return HasMany<Lesson,Student>
+     */
     public function lessons(): HasMany
     {
         return $this->hasMany(Lesson::class);
     }
-
+    /**
+     * @return HasMany<Homework,Student>
+     */
     public function homeworks(): HasMany
     {
         return $this->hasMany(Homework::class);
     }
-
+    /**
+     * @return HasMany<Payment,Student>
+     */
     public function payments(): HasMany
     {
         return $this->hasMany(Payment::class);
     }
-
+    /**
+     * @return HasMany<Note,Student>
+     */
     public function notes(): HasMany
     {
         return $this->hasMany(Note::class);
     }
-
+    /**
+     * @return HasMany<Attachment,Student>
+     */
     public function attachments(): HasMany
     {
         return $this->hasMany(Attachment::class);
     }
+    /**
+     * @return BelongsTo<User,Student>
+     */
     public function parent(): BelongsTo
     {
         return $this->belongsTo(User::class, 'parent_id');
     }
+    /**
+     * @return BelongsToMany<User,Student,Pivot>
+     */
     public function teachers(): BelongsToMany
     {
         return $this->belongsToMany(
@@ -76,6 +95,9 @@ class Student extends Model
             'teacher_id'
         );
     }
+    /**
+     * @return BelongsToMany<AcademyClass,Student,Pivot>
+     */
     public function classes(): BelongsToMany
     {
         return $this->belongsToMany(

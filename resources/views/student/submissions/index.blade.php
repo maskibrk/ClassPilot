@@ -10,7 +10,7 @@
 
     <td>
 
-        <a href="{{ route('student.submissions.show',$submission) }}">
+        <a href="{{ route('student.submissions.edit',$submission) }}">
             View
         </a>
 

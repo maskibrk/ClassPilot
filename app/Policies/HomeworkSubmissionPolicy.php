@@ -44,7 +44,7 @@ return $user->isStudent();
     public function update(User $user, HomeworkSubmission $submission): bool
     {
 if ($user->isTeacher()) {
-return $user->id ===$submission->homework->AcademyClass->teacher_id;
+return $user->id ===$submission->homework->academyClass->teacher_id;
 }
 if ($user->isStudent()) {
 return $submission->student_id===$user->student->id;
