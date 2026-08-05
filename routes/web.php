@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Student\HomeworkSubmissionController;
+use App\Models\HomeworkSubmission;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\StudentController as AdminStudentController;
@@ -73,6 +75,24 @@ Route::middleware(['auth', 'role:student'])
         Route::resource('teachers', StudentTeacherController::class)->only('index', 'show');
         Route::resource('classes', ClassController::class)->only('index', 'show');
         Route::resource('homeworks', HomeworkController::class)->only('index', 'show');
+
+Route::get(
+    'homeworks/{homework}/submit',
+    [HomeworkSubmissionController::class, 'create']
+)->name('submissions.create');
+
+Route::post(
+    'homeworks/{homework}/submit',
+    [HomeworkSubmissionController::class, 'store']
+)->name('submissions.store');
+Route::resource('submissions', HomeworkSubmissionController::class)
+    ->except(['create', 'store']);
+
+
+        Route::get(
+            'submissions/{submission}/preview',
+            [HomeworkSubmissionController::class, 'preview']
+        )->name('submissions.preview');
 
         Route::get(
             'homeworks/{homework}/preview',

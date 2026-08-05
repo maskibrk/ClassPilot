@@ -117,7 +117,101 @@
         @endif
 
     </div>
+<div class="rounded-xl bg-white p-6 shadow dark:bg-zinc-900">
 
+        <div class="flex items-center justify-between">
+
+            <div>
+
+                <h2 class="text-lg font-semibold">
+                    Your Submission
+                </h2>
+
+                @if($submission)
+
+                    <p class="mt-2 text-green-600">
+
+                        Submitted
+                        {{ $submission->submitted_at?->format('d M Y \a\t H:i') }}
+
+                    </p>
+
+                @else
+
+                    <p class="mt-2 text-red-600">
+
+                        You haven't submitted this homework yet.
+
+                    </p>
+
+                @endif
+
+            </div>
+
+            @if($submission)
+
+                <a
+                    href="{{ route('student.submissions.edit', $submission) }}"
+                    class="rounded-lg bg-blue-600 px-5 py-2 text-white hover:bg-blue-700">
+
+                    Update Submission
+
+                </a>
+
+            @else
+
+                <a
+                    href="{{ route('student.submissions.create', $homework) }}"
+                    class="rounded-lg bg-green-600 px-5 py-2 text-white hover:bg-green-700">
+
+                    Submit Homework
+
+                </a>
+
+            @endif
+
+        </div>
+
+
+        @if($submission && $submission->file_path)
+
+            @php
+                $extension = strtolower(pathinfo($submission->file_path, PATHINFO_EXTENSION));
+            @endphp
+
+            <div class="mt-6">
+
+                @if(in_array($extension, ['png','jpg','jpeg','gif','webp']))
+
+                    <img
+                        src="{{ route('student.submissions.preview', $submission) }}"
+                        class="max-h-[600px] rounded-lg border">
+
+                @elseif($extension === 'pdf')
+
+                    <iframe
+                        src="{{ route('student.submissions.preview', $submission) }}"
+                        class="h-[700px] w-full rounded-lg border">
+                    </iframe>
+
+                @else
+
+                    <a
+                        href="{{ route('student.submissions.preview', $submission) }}"
+                        target="_blank"
+                        class="inline-flex rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
+
+                        Open Submitted File
+
+                    </a>
+
+                @endif
+
+            </div>
+
+        @endif
+
+    </div>
 </div>
 
 </x-layouts::app>

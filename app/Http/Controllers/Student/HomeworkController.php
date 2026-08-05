@@ -33,7 +33,7 @@ class HomeworkController extends Controller
      */
     public function create()
     {
-        //
+
     }
 
     /**
@@ -50,7 +50,8 @@ class HomeworkController extends Controller
     public function show(Homework $homework)
     {
         Gate::authorize('view', $homework);
-        return view('student.homeworks.show', compact('homework'));
+$submission = $homework->submissions->first();
+        return view('student.homeworks.show', compact('homework','submission'));
     }
 
     /**
