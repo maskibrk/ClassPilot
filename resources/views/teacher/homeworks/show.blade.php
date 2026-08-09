@@ -16,18 +16,25 @@
 
         </div>
 
-        <div class="flex gap-3">
+<div class="flex gap-3">
 
-            <a
-                href="{{ route('teacher.homeworks.edit', $homework) }}"
-                class="rounded-lg bg-blue-600 px-5 py-2 text-white hover:bg-blue-700">
+    <a
+        href="{{ route('teacher.homeworks.submissions.index', $homework) }}"
+        class="rounded-lg bg-green-600 px-5 py-2 text-white hover:bg-green-700">
 
-                Edit Homework
+        View Submissions
 
-            </a>
+    </a>
 
-        </div>
+    <a
+        href="{{ route('teacher.homeworks.edit', $homework) }}"
+        class="rounded-lg bg-blue-600 px-5 py-2 text-white hover:bg-blue-700">
 
+        Edit Homework
+
+    </a>
+
+</div>
     </div>
 
 

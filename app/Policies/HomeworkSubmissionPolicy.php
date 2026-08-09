@@ -47,7 +47,8 @@ if ($user->isTeacher()) {
 return $user->id ===$submission->homework->academyClass->teacher_id;
 }
 if ($user->isStudent()) {
-return $submission->student_id===$user->student->id;
+
+return $user->isStudent() && $submission->student_id===$user->student->id ;
 }
     }
 
@@ -56,9 +57,15 @@ return $submission->student_id===$user->student->id;
      */
     public function delete(User $user, HomeworkSubmission $submission): bool
     {
-return $this->update($user, $submission);
-    }
 
+    if (!$user->isStudent()) {
+        return false;
+    }
+    if ($submission->grade !== null) {
+        return false;
+    }
+  return $submission->student_id === $user->student->id;
+    }
     /**
      * Determine whether the user can restore the model.
      */

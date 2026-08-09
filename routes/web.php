@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Student\HomeworkSubmissionController;
+use App\Http\Controllers\Teacher\HomeworkSubmissionController as TeacherHomeworkSubmissionController;
 use App\Models\HomeworkSubmission;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
@@ -49,12 +50,19 @@ Route::middleware(['auth', 'role:teacher'])
 
         Route::resource('students', TeacherStudentController::class);
 
+Route::resource('homeworks.submissions', TeacherHomeworkSubmissionController::class)->except('delete');
         Route::resource('classes', TeacherAcademicClassController::class);
         Route::resource('homeworks', TeacherHomeworkController::class);
         Route::get(
             'homeworks/{homework}/preview',
             [TeacherHomeworkController::class, 'preview']
         )->name('homeworks.preview');
+
+        Route::get(
+            'submissions/{submission}/preview',
+            [TeacherHomeworkSubmissionController::class, 'preview']
+        )->name('submissions.preview');
+
     });
 
 Route::middleware(['auth', 'role:parent'])

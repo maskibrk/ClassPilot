@@ -171,6 +171,14 @@
                 Homework
             </flux:sidebar.item>
 
+<flux:sidebar.item
+    icon="document-check"
+    :href="route('student.submissions.index')"
+    :current="request()->routeIs('student.submissions.*')"
+    wire:navigate>
+    My Submissions
+</flux:sidebar.item>
+
         </flux:sidebar.group>
 
 
