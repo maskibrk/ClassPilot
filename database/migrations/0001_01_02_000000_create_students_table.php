@@ -14,9 +14,7 @@ return new class extends Migration
         Schema::create('students', function (Blueprint $table) {
             $table->id();
 
-            // Optional login account for the student
             $table->foreignId('user_id')
-                ->nullable()
                 ->constrained()
                 ->nullOnDelete();
 

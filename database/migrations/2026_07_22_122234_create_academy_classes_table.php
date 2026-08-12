@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
 
             $table->string('name');
-            $table->string('code')->nullable()->unique();
             $table->text('description')->nullable();
 
             $table->foreignId('teacher_id')
