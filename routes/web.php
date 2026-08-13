@@ -32,11 +32,18 @@ Route::middleware(['auth', 'role:admin'])
 
         Route::view('dashboard', 'admin.dashboard')->name('dashboard');
 
-        Route::resource('students', AdminStudentController::class);
+        /* Route::resource('students', AdminStudentController::class); */
 
         Route::resource('teachers', TeacherController::class);
 
         Route::resource('parents', ParentController::class);
+
+  // Students
+/* Route::livewire('students', 'admin.students.index') */
+/*     ->name('students.index'); */
+
+        Route::resource('students', AdminStudentController::class);
+            /* ->except(['index']); */
 
         Route::resource('classes', AdminAcademicClassController::class);
     });

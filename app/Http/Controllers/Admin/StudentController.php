@@ -16,12 +16,12 @@ class StudentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
 
         Gate::authorize('viewAny', Student::class);
-        $students = Student::with(['teachers', 'parent'])->latest()->get();
-        return view("admin.students.index", compact('students'));
+
+        return view("admin.students.index");
     }
 
 

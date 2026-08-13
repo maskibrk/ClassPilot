@@ -22,9 +22,9 @@ class DatabaseSeeder extends Seeder
 
         $password = Hash::make('password');
 
-        $teacherCount = 30;
-        $parentCount = 150;
-        $studentCount = 500;
+        $teacherCount = 60;
+        $parentCount = 300;
+        $studentCount = 1000;
 
         /*
         |--------------------------------------------------------------------------
@@ -416,7 +416,7 @@ class DatabaseSeeder extends Seeder
                     $status === 'reviewed' ||
                     $status === 'returned'
                 ) {
-                    $grade = rand(50, 100);
+                    $grade = rand(1, 20);
 
                     $feedback = fake()->randomElement([
                         'Good work.',
