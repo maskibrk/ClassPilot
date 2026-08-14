@@ -30,77 +30,15 @@ class="rounded-lg bg-green-600 px-5 py-2 text-white">
 
 
 
-<div class="overflow-hidden rounded-xl bg-white shadow">
+    @if(session('success'))
+        <div class="rounded-lg bg-green-100 p-4 text-green-700">
+            {{ session('success') }}
+        </div>
+    @endif
 
-
-<table class="min-w-full">
-
-
-<thead class="bg-zinc-100">
-
-<tr>
-
-<th class="px-6 py-3 text-left">
-Name
-</th>
-
-
-<th class="px-6 py-3 text-left">
-Email
-</th>
-
-
-<th class="px-6 py-3 text-left">
-Students
-</th>
-
-
-</tr>
-
-</thead>
-
-
-
-<tbody>
-
-
-@foreach($teachers as $teacher)
-
-<tr class="border-t">
-
-<td class="px-6 py-4">
-    <a
-        href="{{ route('admin.teachers.show', $teacher) }}"
-        class="font-medium text-blue-600 hover:text-blue-700 hover:underline dark:text-blue-400 dark:hover:text-blue-300">
-        {{ $teacher->name }}
-    </a>
-</td>
-
-<td class="px-6 py-4">
-{{ $teacher->email }}
-</td>
-
-
-<td class="px-6 py-4">
-{{ $teacher->students_count }}
-</td>
-
-
-</tr>
-
-
-@endforeach
-
-
-</tbody>
-
-
-</table>
+    {{-- Livewire handles only search + table --}}
+    <livewire:admin.teachers.search />
 
 
 </div>
-
-
-</div>
-
 </x-layouts::app>

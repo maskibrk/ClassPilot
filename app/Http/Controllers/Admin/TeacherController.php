@@ -16,8 +16,8 @@ class TeacherController extends Controller
      */
     public function index()
     {
-        $teachers = User::teachers()->withCount('students')->get();
-        return view("admin.teachers.index", compact('teachers'));
+
+        return view("admin.teachers.index");
     }
 
     /**
