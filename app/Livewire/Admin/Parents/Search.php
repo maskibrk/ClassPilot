@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Livewire\Admin\Teachers;
+namespace App\Livewire\Admin\Parents;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
@@ -28,7 +28,7 @@ public function mount(): void
 }
     public function render()
     {
-        $teachers = User::teachers()->withCount(['students'])
+        $parents = User::parents()->withCount(['children'])
             ->when($this->search, function ($query) {
                 $search = $this->search;
 //ILIKE is postgres only
@@ -41,7 +41,7 @@ public function mount(): void
             ->latest()
             ->paginate(20);
 
-        return view('livewire.admin.teachers.search',compact('teachers'));
+        return view('livewire.admin.parents.search',compact('parents'));
     }
 };
 ?>

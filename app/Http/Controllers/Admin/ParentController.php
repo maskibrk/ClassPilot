@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Student;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 
 class ParentController extends Controller
@@ -15,11 +16,9 @@ class ParentController extends Controller
      */
     public function index()
     {
-        $parents = User::parents()
-            ->withCount('children')
-            ->get();
+        Gate::authorize('viewAny', User::class);
 
-        return view("admin.parents.index", compact('parents'));
+        return view("admin.parents.index");
     }
 
     /**
@@ -27,6 +26,8 @@ class ParentController extends Controller
      */
     public function create()
     {
+
+        Gate::authorize('create', User::class);
         $students = Student::select('id', 'name')
             ->whereNull('parent_id')
             ->orderBy('name')
@@ -39,6 +40,7 @@ class ParentController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('create', User::class);
         $validated = $request->validate([
 
             'name' => [
@@ -114,6 +116,7 @@ class ParentController extends Controller
     public function show(User $parent)
     {
 
+        Gate::authorize('view', $parent);
         $parent->load('children');
 
         return view('admin.parents.show', compact('parent'));
@@ -124,6 +127,8 @@ class ParentController extends Controller
      */
     public function edit(User $parent)
     {
+
+        Gate::authorize('update', $parent);
         $students = Student::query()
             ->select('id', 'name', 'parent_id')
             ->where(function ($query) use ($parent) {
@@ -142,6 +147,8 @@ class ParentController extends Controller
      */
     public function update(Request $request, User $parent)
     {
+
+        Gate::authorize('update', $parent);
 
         $validated = $request->validate([
 
@@ -202,6 +209,9 @@ class ParentController extends Controller
      */
     public function destroy(User $parent)
     {
+
+        Gate::authorize('delete', $parent);
+
         Student::where('parent_id', $parent->id)
             ->update([
                 'parent_id' => null

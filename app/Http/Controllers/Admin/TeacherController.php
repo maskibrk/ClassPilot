@@ -17,6 +17,7 @@ class TeacherController extends Controller
     public function index()
     {
 
+        Gate::authorize('viewAny', User::class);
         return view("admin.teachers.index");
     }
 
@@ -26,6 +27,7 @@ class TeacherController extends Controller
     public function create()
     {
 
+        Gate::authorize('create', User::class);
         return view("admin.teachers.create");
     }
 
@@ -34,6 +36,8 @@ class TeacherController extends Controller
      */
     public function store(Request $request)
     {
+
+        Gate::authorize('create', User::class);
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:users,email'],
@@ -58,6 +62,7 @@ class TeacherController extends Controller
     public function show(User $teacher)
     {
 
+        Gate::authorize('view', $teacher);
         $teacher->load('students', 'classes');
 
         return view('admin.teachers.show', compact('teacher'));
@@ -67,6 +72,8 @@ class TeacherController extends Controller
      */
     public function edit(User $teacher)
     {
+
+        Gate::authorize('update', $teacher);
         $students = Student::query()
             ->select('id', 'name')
             ->orderBy('name')
@@ -84,6 +91,7 @@ class TeacherController extends Controller
     public function update(Request $request, User $teacher)
     {
 
+        Gate::authorize('update', $teacher);
         $validated = $request->validate([
 
             'name' => [
@@ -132,6 +140,8 @@ class TeacherController extends Controller
      */
     public function destroy(User $teacher)
     {
+
+        Gate::authorize('destroy', $teacher);
         $teacher->students()->detach();
 
         $teacher->delete();
