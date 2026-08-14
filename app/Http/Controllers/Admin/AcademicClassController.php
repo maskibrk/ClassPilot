@@ -17,8 +17,9 @@ class AcademicClassController extends Controller
      */
     public function index()
     {
-        $classes = AcademyClass::with('teacher')->withCount('students')->latest()->get();
-        return view('admin.classes.index', compact('classes'));
+Gate::authorize('viewAny', AcademyClass::class);
+
+        return view('admin.classes.index');
     }
 
     /**
