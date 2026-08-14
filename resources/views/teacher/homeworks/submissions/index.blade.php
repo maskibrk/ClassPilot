@@ -1,9 +1,7 @@
-
 <x-layouts::app :title="$homework->title . ' - Submissions'">
 
 <div class="space-y-6">
 
-```
 {{-- Header --}}
 <div class="flex items-center justify-between">
 
@@ -235,8 +233,8 @@
     @endif
 
 </div>
-```
 
 </div>
 
 </x-layouts::app>
+

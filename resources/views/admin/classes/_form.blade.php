@@ -35,11 +35,11 @@
         Name
     </label>
 
-    <input
-        name="name"
-        value="{{ old('name', $class->name ?? '') }}"
-        class="mt-1 w-full rounded-lg border p-2">
-
+<input
+    name="name"
+    value="{{ old('name', $class->name ?? '') }}"
+    class="mt-1 w-full rounded-lg border border-zinc-300 bg-white p-2
+           dark:border-zinc-700 dark:bg-zinc-800 dark:text-white">
 </div>
 
 
@@ -48,12 +48,11 @@
     <label class="block font-medium">
         Description
     </label>
-
-    <textarea
-        name="description"
-        rows="4"
-        class="mt-1 w-full rounded-lg border p-2">{{ old('description', $class->description ?? '') }}</textarea>
-
+<textarea
+    name="description"
+    rows="4"
+    class="mt-1 w-full rounded-lg border border-zinc-300 bg-white p-2
+           dark:border-zinc-700 dark:bg-zinc-800 dark:text-white">{{ old('description', $class->description ?? '') }}</textarea>
 </div>
 
 

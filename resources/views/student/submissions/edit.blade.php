@@ -3,7 +3,6 @@
 
 <div class="max-w-3xl space-y-6">
 
-```
 <div>
 
     <h1 class="text-3xl font-bold">
@@ -112,7 +111,6 @@
     </div>
 
 @endif
-```
 
 </div>
 

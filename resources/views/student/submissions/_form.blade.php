@@ -6,16 +6,13 @@
 
     <input
         value="{{ $homework->title ?? $submission->homework->title }}"
-        class="mt-1 w-full rounded-lg border bg-zinc-100 p-2"
+        class="mt-1 w-full rounded-lg border bg-zinc-100 p-2 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
         readonly>
 
 </div>
 
 <div>
 
-    <label class="block font-medium">
-        Upload Submission
-    </label>
 
     @if(isset($submission) && $submission->file_path)
 

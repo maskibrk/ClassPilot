@@ -58,9 +58,10 @@
 
                     <td class="px-6 py-4">
                         @forelse($student->teachers as $teacher)
-                            <span class="mr-1 rounded bg-blue-100 px-2 py-1 text-sm">
-                                {{ $teacher->name }}
-                            </span>
+<span class="mr-1 rounded bg-blue-100 px-2 py-1 text-sm text-blue-800
+             dark:bg-blue-950 dark:text-blue-200">
+    {{ $teacher->name }}
+</span>
                         @empty
                             <span class="text-zinc-500">
                                 No teacher

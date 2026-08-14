@@ -77,6 +77,8 @@
         @foreach($teachers as $teacher)
             <option
                 value="{{ $teacher->id }}"
+                data-email="{{ $teacher->email }}"
+                data-initials="{{ collect(explode(' ', $teacher->name))->map(fn($p) => Str::substr($p, 0, 1))->take(2)->implode('') }}"
                 @selected($student->teachers->contains($teacher->id))>
                 {{ $teacher->name }}
             </option>
@@ -148,6 +150,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
+
 @endpush
+
 </x-layouts::app>
 

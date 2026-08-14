@@ -2,7 +2,6 @@
 
 <div class="space-y-6">
 
-```
 {{-- Header --}}
 <div>
 
@@ -169,7 +168,7 @@
                                         href="{{ route('student.submissions.edit', $submission) }}"
                                         class="rounded-lg bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700">
 
-                                        View Submission
+                                        Edit Submission
 
                                     </a>
 
@@ -190,7 +189,7 @@
     @endif
 
 </div>
-```
+
 
 </div>
 

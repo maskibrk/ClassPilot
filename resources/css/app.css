@@ -1,6 +1,6 @@
 @import 'tailwindcss';
 @import '../../vendor/livewire/flux/dist/flux.css';
-@import "tom-select/dist/css/tom-select.css";
+@import "tom-select/dist/css/tom-select.css" layer(base);
 
 @source '../views';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
@@ -65,3 +65,61 @@ select:focus[data-flux-control] {
 /* \[:where(&)\]:size-4 {
     @apply size-4;
 } */
+@layer components {
+    .ts-wrapper .ts-control {
+        @apply rounded-lg border border-zinc-300 bg-white p-2 shadow-sm transition
+               dark:border-zinc-700 dark:bg-zinc-800;
+    }
+    .ts-wrapper.multi .ts-control {
+        @apply flex flex-wrap gap-1.5;
+    }
+    .ts-wrapper.focus .ts-control {
+        @apply border-blue-500 ring-2 ring-blue-500/20;
+    }
+    .ts-wrapper .ts-control input {
+        @apply text-sm text-zinc-900 dark:text-white;
+    }
+    .ts-wrapper .ts-control input::placeholder {
+        @apply text-zinc-400;
+    }
+
+    /* selected chips */
+ .ts-control > .item {
+        @apply flex items-center gap-1.5 rounded-full bg-blue-50 py-1 pl-1 pr-2 text-sm font-medium text-blue-800
+               dark:bg-zinc-700 dark:text-zinc-100;
+    }
+    .ts-control > .item .item-avatar {
+        @apply flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-[10px] font-semibold text-white
+               dark:bg-zinc-500;
+    }
+    .ts-control > .item .remove {
+        @apply ml-1 rounded-full px-1 text-blue-400 hover:bg-blue-100 hover:text-blue-700
+               dark:text-zinc-400 dark:hover:bg-zinc-600 dark:hover:text-zinc-100;
+
+    border: none !important;
+    }
+    /* dropdown */
+    .ts-dropdown {
+        @apply mt-1 overflow-hidden rounded-lg border border-zinc-200 bg-white shadow-lg
+               dark:border-zinc-700 dark:bg-zinc-900;
+    }
+    .ts-dropdown .ts-dropdown-content {
+        @apply max-h-64 overflow-y-auto py-1;
+    }
+    .ts-dropdown .option {
+        @apply flex cursor-pointer items-center gap-2.5 px-3 py-2 text-sm text-zinc-700 dark:text-zinc-200;
+    }
+    .ts-dropdown .option.active {
+        @apply bg-blue-50 dark:bg-zinc-800;
+    }
+    .ts-dropdown .option .option-avatar {
+        @apply flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-zinc-200 text-xs font-semibold text-zinc-600
+               dark:bg-zinc-700 dark:text-zinc-300;
+    }
+    .ts-dropdown .option .option-email {
+        @apply block text-xs text-zinc-400;
+    }
+    .ts-dropdown .no-results {
+        @apply px-3 py-4 text-center text-sm text-zinc-400;
+    }
+}
