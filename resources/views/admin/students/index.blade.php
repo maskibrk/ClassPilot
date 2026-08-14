@@ -30,7 +30,7 @@
     @endif
 
     {{-- Livewire handles only search + table --}}
-    <livewire:admin.students.search />
+    <livewire:admin.students.search-students />
 
 </div>
 
