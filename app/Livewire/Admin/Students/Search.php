@@ -9,7 +9,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 
 
-class SearchStudents extends Component
+class Search extends Component
 
 {
     use WithPagination;
