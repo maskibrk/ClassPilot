@@ -82,21 +82,12 @@
 
     </form>
 
-    <form
-        action="{{ route('admin.teachers.destroy', $teacher) }}"
-        method="POST"
-        onsubmit="return confirm('Are you sure you want to delete this teacher?');">
+<x-confirm-delete
+    name="{{ $teacher->name }}"
+    action="{{ route('admin.teachers.destroy', $teacher) }}"
+    modal="delete-teacher-{{ $teacher->id }}"
+/>
 
-        @csrf
-        @method('DELETE')
-
-        <button
-            type="submit"
-            class="rounded-lg bg-red-600 px-5 py-2 text-white hover:bg-red-700">
-            Delete Teacher
-        </button>
-
-    </form>
 
 </div>
 

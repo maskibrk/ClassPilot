@@ -30,22 +30,13 @@
 
     </form>
 
-    <form
-        action="{{ route('admin.classes.destroy', $class) }}"
-        method="POST"
-        onsubmit="return confirm('Are you sure you want to delete this class?');">
 
-        @csrf
-        @method('DELETE')
+<x-confirm-delete
+    name="{{ $class->name }}"
+    action="{{ route('admin.classes.destroy', $class) }}"
+modal="delete-class-{{ $class->id }}"
+/>
 
-        <button
-            class="rounded-lg bg-red-600 px-5 py-2 text-white hover:bg-red-700">
-
-            Delete Class
-
-        </button>
-
-    </form>
 
 </div>
 

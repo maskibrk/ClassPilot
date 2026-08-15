@@ -255,9 +255,7 @@ class StudentController extends Controller
 
         DB::transaction(function () use ($student) {
             $student->teachers()->detach();
-            $user = $student->user;
-            $student->delete();
-            $user?->delete();
+            $student->user->delete();
         });
 
         return redirect()

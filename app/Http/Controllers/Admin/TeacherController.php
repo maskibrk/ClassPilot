@@ -141,7 +141,7 @@ class TeacherController extends Controller
     public function destroy(User $teacher)
     {
 
-        Gate::authorize('destroy', $teacher);
+        Gate::authorize('delete', $teacher);
         $teacher->students()->detach();
 
         $teacher->delete();

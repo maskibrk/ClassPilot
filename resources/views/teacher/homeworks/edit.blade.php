@@ -32,22 +32,12 @@ enctype="multipart/form-data"
 
     </form>
 
-    <form
-        method="POST"
-        action="{{ route('teacher.homeworks.destroy', $homework) }}"
-        onsubmit="return confirm('Delete this homework?')">
+<x-confirm-delete
+    name="{{ $homework->title }}"
+    action="{{ route('teacher.homeworks.destroy', $homework) }}"
+    modal="delete-homework-{{ $homework->id }}"
+/>
 
-        @csrf
-        @method('DELETE')
-
-        <button
-            class="rounded-lg bg-red-600 px-5 py-2 text-white hover:bg-red-700">
-
-            Delete Homework
-
-        </button>
-
-    </form>
 
 </div>
 

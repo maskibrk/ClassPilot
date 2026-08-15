@@ -1,6 +1,36 @@
-@stack('scripts')
-<x-layouts::app.sidebar :title="$title ?? null">
-    <flux:main>
-        {{ $slot }}
-    </flux:main>
-</x-layouts::app.sidebar>
+
+    <x-layouts::app.sidebar :title="$title ?? null">
+
+        <flux:main>
+            {{ $slot }}
+        </flux:main>
+
+        @if (session('success'))
+            <script>
+                window.addEventListener('load', () => {
+                    Flux.toast({
+                        variant: 'success',
+                        text: @js(session('success')),
+                    });
+                });
+            </script>
+        @endif
+
+        @if (session('error'))
+            <script>
+                window.addEventListener('load', () => {
+                    Flux.toast({
+                        variant: 'danger',
+                        text: @js(session('error')),
+                    });
+                });
+            </script>
+        @endif
+
+        @stack('scripts')
+
+    </x-layouts::app.sidebar>
+
+    @livewireScripts
+    @fluxScripts
+

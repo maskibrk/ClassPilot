@@ -117,21 +117,11 @@
         </form>
 
         <!-- Delete Student Form -->
-        <form
-            action="{{ route('admin.students.destroy', $student) }}"
-            method="POST"
-            onsubmit="return confirm('Are you sure you want to delete this student?');">
-
-            @csrf
-            @method('DELETE')
-
-            <button
-                type="submit"
-                class="rounded-lg bg-red-600 px-5 py-2 text-white hover:bg-red-700">
-                Delete Student
-            </button>
-
-        </form>
+<x-confirm-delete
+    name="{{ $student->name }}"
+    action="{{ route('admin.students.destroy', $student) }}"
+    modal="delete-student-{{ $student->id }}"
+/>
 
     </div>
 

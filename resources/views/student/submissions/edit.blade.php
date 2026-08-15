@@ -89,24 +89,13 @@
             You can submit a new file later if the homework is still accepting submissions.
         </p>
 
-        <form
-            method="POST"
-            action="{{ route('student.submissions.destroy', $submission) }}"
-            class="mt-4"
-            onsubmit="return confirm('Are you sure you want to delete your submission?');">
 
-            @csrf
-            @method('DELETE')
+<x-confirm-delete
+    name="{{ $submission->homework->title }}'s submission "
+    action="{{ route('student.submissions.destroy', $submission) }}"
+    modal="delete-submission-{{ $submission->id }}"
+/>
 
-            <button
-                type="submit"
-                class="rounded-lg bg-red-600 px-5 py-2 text-white hover:bg-red-700">
-
-                Delete Submission
-
-            </button>
-
-        </form>
 
     </div>
 
