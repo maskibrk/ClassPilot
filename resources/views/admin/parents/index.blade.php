@@ -1,43 +1,38 @@
 <x-layouts::app :title="__('Parents')">
+<div class="space-y-8">
 
-    <div class="space-y-6">
+    {{-- Header --}}
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
 
-        {{-- Header --}}
-        <div class="flex items-center justify-between">
+        <div class="space-y-1">
 
-            <div>
-                <h1 class="text-3xl font-bold">
-                    Parents
-                </h1>
+            <flux:heading size="xl">
+                Parents
+            </flux:heading>
 
-                <p class="mt-2 text-zinc-500">
-                    Manage parent accounts.
-                </p>
-            </div>
-
-            <a
-                href="{{ route('admin.parents.create') }}"
-                class="rounded-lg bg-green-600 px-5 py-2 text-white hover:bg-green-700"
-            >
-                + Add Parent
-            </a>
+            <flux:text class="text-zinc-500">
+                Manage parent accounts and their children.
+            </flux:text>
 
         </div>
 
 
-        {{-- Success message --}}
-        @if(session('success'))
-
-            <div class="rounded-lg bg-green-100 p-4 text-green-700">
-                {{ session('success') }}
-            </div>
-
-        @endif
-
-
-        {{-- Livewire --}}
-        <livewire:admin.parents.search />
+        <flux:button
+            href="{{ route('admin.parents.create') }}"
+            variant="primary"
+            icon="plus"
+        >
+            Add Parent
+        </flux:button>
 
     </div>
+
+
+    {{-- Parents table --}}
+    <div>
+        <livewire:admin.parents.search />
+    </div>
+
+</div>
 
 </x-layouts::app>

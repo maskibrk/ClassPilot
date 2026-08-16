@@ -45,7 +45,14 @@ public function mount(): void
             ->latest()
             ->paginate(20);
 
-        return view('livewire.admin.parents.search',compact('parents'));
+    $totalParents = User::parents()->count();
+
+    $totalChildren = User::parents()
+        ->withCount('children')
+        ->get()
+        ->sum('children_count');
+
+        return view('livewire.admin.parents.search',compact('parents','totalParents','totalChildren'));
     }
 };
 ?>
