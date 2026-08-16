@@ -32,5 +32,4 @@
     </x-layouts::app.sidebar>
 
     @livewireScripts
-    @fluxScripts
 
