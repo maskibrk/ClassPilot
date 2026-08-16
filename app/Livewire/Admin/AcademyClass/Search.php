@@ -19,6 +19,10 @@ class Search extends Component
 
     public string $search = '';
 
+ public function paginationView(): string
+    {
+        return 'vendor.pagination.tailwind';
+    }
     public function updatedSearch(): void
     {
         $this->resetPage();

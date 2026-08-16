@@ -20,6 +20,10 @@ class Search extends Component
     {
         $this->resetPage();
     }
+ public function paginationView(): string
+    {
+        return 'vendor.pagination.tailwind';
+    }
 public function mount(): void
 {
     Gate::authorize('viewAny', Student::class);
