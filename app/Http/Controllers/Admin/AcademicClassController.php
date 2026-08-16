@@ -60,6 +60,12 @@ Gate::authorize('viewAny', AcademyClass::class);
                 'string',
                 'max:255'
             ],
+  'capacity' => [
+                'required',
+                'int',
+                'max:40'
+            ],
+
 
             'students' => [
                 'nullable',
@@ -93,7 +99,7 @@ Gate::authorize('viewAny', AcademyClass::class);
 
         Gate::authorize('view', $class);
 
-        $class->load('teacher', 'students');
+        $class->load('teacher', 'students')->loadCount('students');
 
         return view('admin.classes.show', compact('class'));
     }
@@ -130,6 +136,11 @@ Gate::authorize('viewAny', AcademyClass::class);
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:255'],
             'students' => ['nullable', 'array'],
+  'capacity' => [
+                'required',
+                'int',
+                'max:40'
+            ],
             'students.*' => ['exists:students,id'],
         ]);
 

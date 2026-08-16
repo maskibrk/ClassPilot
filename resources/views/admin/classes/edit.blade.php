@@ -1,11 +1,16 @@
 <x-layouts::app :title="__('Edit Class')">
 
 <div class="max-w-3xl space-y-6">
+    {{-- Header --}}
+        <div class="space-y-1">
+            <flux:heading size="xl">
+                Edit Class
+            </flux:heading>
 
-    <h1 class="text-3xl font-bold">
-        Edit Class
-    </h1>
-
+            <flux:text class="text-zinc-500">
+                Update the class information, teacher, capacity, and students.
+            </flux:text>
+        </div>
     <form
         method="POST"
         action="{{ route('admin.classes.update', $class) }}"
@@ -15,18 +20,6 @@
         @method('PUT')
 
         @include('admin.classes._form')
-
-        <div class="flex justify-end">
-
-            <button
-                type="submit"
-                class="rounded-lg bg-blue-600 px-5 py-2 text-white hover:bg-blue-700">
-
-                Save Changes
-
-            </button>
-
-        </div>
 
     </form>
 

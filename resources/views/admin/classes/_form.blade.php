@@ -1,116 +1,184 @@
-<div>
+<div class="space-y-6">
 
-    <label class="block font-medium">
+    {{-- Teacher --}}
+<flux:field>
+    <flux:label>
         Teacher
-    </label>
+    </flux:label>
 
     <select
         id="teacher-select"
-        name="teacher_id">
-
+        name="teacher_id"
+        class="w-full"
+    >
         <option value="">
             Select a teacher...
         </option>
 
         @foreach($teachers as $teacher)
-
             <option
                 value="{{ $teacher->id }}"
-                @selected(old('teacher_id', $class->teacher_id ?? '') == $teacher->id)>
-
+                @selected(old('teacher_id', $class->teacher_id ?? '') == $teacher->id)
+            >
                 {{ $teacher->name }}
-
             </option>
-
         @endforeach
-
     </select>
 
-</div>
+    @error('teacher_id')
+        <flux:error>{{ $message }}</flux:error>
+    @enderror
+</flux:field>
+    {{-- Name --}}
+    <flux:field>
+        <flux:label>
+            Class Name
+        </flux:label>
+
+        <flux:input
+            name="name"
+            value="{{ old('name', $class->name ?? '') }}"
+            placeholder="e.g. Mathematics - Grade 10"
+        />
+
+        @error('name')
+            <flux:error>{{ $message }}</flux:error>
+        @enderror
+    </flux:field>
 
 
-<div>
+    {{-- Capacity --}}
+    <flux:field>
+        <flux:label>
+            Capacity
+        </flux:label>
 
-    <label class="block font-medium">
-        Name
-    </label>
+        <flux:input
+            type="number"
+            name="capacity"
+            value="{{ old('capacity', $class->capacity ?? '') }}"
+            placeholder="e.g. 25"
+            min="1"
+        />
 
-<input
-    name="name"
-    value="{{ old('name', $class->name ?? '') }}"
-    class="mt-1 w-full rounded-lg border border-zinc-300 bg-white p-2
-           dark:border-zinc-700 dark:bg-zinc-800 dark:text-white">
-</div>
+        <flux:description>
+            Maximum number of students allowed in this class.
+        </flux:description>
 
-
-<div>
-
-    <label class="block font-medium">
-        Description
-    </label>
-<textarea
-    name="description"
-    rows="4"
-    class="mt-1 w-full rounded-lg border border-zinc-300 bg-white p-2
-           dark:border-zinc-700 dark:bg-zinc-800 dark:text-white">{{ old('description', $class->description ?? '') }}</textarea>
-</div>
+        @error('capacity')
+            <flux:error>{{ $message }}</flux:error>
+        @enderror
+    </flux:field>
 
 
-<div>
+    {{-- Description --}}
+    <flux:field>
+        <flux:label>
+            Description
+        </flux:label>
 
-    <label class="block font-medium">
-        Students
-    </label>
+        <flux:textarea
+            name="description"
+            rows="4"
+            placeholder="Add a description for this class..."
+        >{{ old('description', $class->description ?? '') }}</flux:textarea>
 
-    <select
-        id="students-select"
-        name="students[]"
-        multiple>
+        @error('description')
+            <flux:error>{{ $message }}</flux:error>
+        @enderror
+    </flux:field>
 
-        @foreach($students as $student)
 
-            <option
-                value="{{ $student->id }}"
-                @selected(
-                    in_array(
-                        $student->id,
-                        old(
-                            'students',
-                            isset($class)
-                                ? $class->students->pluck('id')->toArray()
-                                : []
+    {{-- Students --}}
+    <flux:field>
+        <flux:label>
+            Students
+        </flux:label>
+
+        <div>
+            <select
+                id="students-select"
+                name="students[]"
+                multiple
+                class="w-full"
+            >
+                @foreach($students as $student)
+
+                    <option
+                        value="{{ $student->id }}"
+                        @selected(
+                            in_array(
+                                $student->id,
+                                old(
+                                    'students',
+                                    isset($class)
+                                        ? $class->students->pluck('id')->toArray()
+                                        : []
+                                )
+                            )
                         )
-                    )
-                )>
+                    >
+                        {{ $student->name }}
+                    </option>
 
-                {{ $student->name }}
+                @endforeach
+            </select>
+        </div>
 
-            </option>
+        <flux:description>
+            Select the students who should be enrolled in this class.
+        </flux:description>
 
-        @endforeach
+        @error('students')
+            <flux:error>{{ $message }}</flux:error>
+        @enderror
 
-    </select>
+        @error('students.*')
+            <flux:error>{{ $message }}</flux:error>
+        @enderror
+    </flux:field>
+
+
+    {{-- Submit --}}
+    <div class="flex items-center justify-end gap-3 pt-2">
+
+        <flux:button
+            href="{{ route('admin.classes.index') }}"
+            variant="ghost"
+        >
+            Cancel
+        </flux:button>
+
+        <flux:button
+            type="submit"
+            variant="primary"
+            icon="check"
+        >
+            {{ isset($class) ? 'Update Class' : 'Create Class' }}
+        </flux:button>
+
+    </div>
 
 </div>
 
 
 @push('scripts')
-
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-
-    new TomSelect('#teacher-select', {
-        placeholder: 'Select a teacher...',
-        create: false,
-    });
 
     new TomSelect('#students-select', {
         plugins: ['remove_button'],
         placeholder: 'Search students...',
         create: false,
     });
-
+new TomSelect('#teacher-select', {
+    placeholder: 'Search teacher...',
+    create: false,
+    maxItems: 1,
+    searchField: ['text'],
+});
 });
 </script>
-
 @endpush
+
+

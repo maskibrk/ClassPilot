@@ -47,7 +47,18 @@ public function mount(): void
             ->latest()
             ->paginate(20);
 
-        return view('livewire.admin.classes.search',compact('classes'));
+ $allClasses = AcademyClass::withCount('students')->get();
+
+    $totalClasses = $allClasses->count();
+
+    $fullClasses = $allClasses
+        ->filter(fn ($class) => $class->isFull())
+        ->count();
+
+        $totalAvailableSeats = $allClasses
+            ->sum(fn (AcademyClass $class) => $class->availableSeats());
+
+        return view('livewire.admin.classes.search',compact('classes','totalClasses','fullClasses','totalAvailableSeats'));
     }
 };
 ?>

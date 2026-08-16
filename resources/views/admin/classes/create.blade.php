@@ -2,10 +2,16 @@
 
 <div class="max-w-3xl space-y-6">
 
-    <h1 class="text-3xl font-bold">
-        Create Class
-    </h1>
+  {{-- Header --}}
+        <div class="space-y-1">
+            <flux:heading size="xl">
+                Edit Class
+            </flux:heading>
 
+            <flux:text class="text-zinc-500">
+                Update the class information, teacher, capacity, and students.
+            </flux:text>
+        </div>
     <form
         method="POST"
         action="{{ route('admin.classes.store') }}"
@@ -15,17 +21,6 @@
 
         @include('admin.classes._form')
 
-        <div class="flex justify-end">
-
-            <button
-                type="submit"
-                class="rounded-lg bg-green-600 px-5 py-2 text-white hover:bg-green-700">
-
-                Create Class
-
-            </button>
-
-        </div>
 
     </form>
 
