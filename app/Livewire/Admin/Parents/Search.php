@@ -1,8 +1,10 @@
 <?php
 
 
+
 namespace App\Livewire\Admin\Parents;
 
+use App\Models\Student;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Component;
@@ -30,29 +32,38 @@ public function mount(): void
 {
     Gate::authorize('viewAny', User::class);
 }
-    public function render()
-    {
-        $parents = User::parents()->withCount(['children'])
-            ->when($this->search, function ($query) {
-                $search = $this->search;
-//ILIKE is postgres only
-                $query->where(function ($query) use ($search) {
-                    $query->where('name', 'ILIKE', "%{$search}%")
-                        ->orWhere('email', 'ILIKE', "%{$search}%")
-                        ->orWhere('phone', 'ILIKE', "%{$search}%");
-                });
-            })
-            ->latest()
-            ->paginate(20);
+public function render()
+{
+    $parentsQuery = User::parents()
+        ->when($this->search, function ($query) {
+            $search = $this->search;
 
-    $totalParents = User::parents()->count();
+            $query->where(function ($query) use ($search) {
+                $query->where('name', 'ILIKE', "%{$search}%")
+                    ->orWhere('email', 'ILIKE', "%{$search}%")
+                    ->orWhere('phone', 'ILIKE', "%{$search}%");
+            });
+        });
 
-    $totalChildren = User::parents()
+    $parents = (clone $parentsQuery)
         ->withCount('children')
-        ->get()
-        ->sum('children_count');
+        ->latest()
+        ->paginate(20);
 
-        return view('livewire.admin.parents.search',compact('parents','totalParents','totalChildren'));
-    }
+$totalParents = $parents->total();
+
+    $totalChildren = Student::whereHas('parent', function ($query) use ($parentsQuery) {
+        // Apply the same parent filtering here
+    })->count();
+
+    return view(
+        'livewire.admin.parents.search',
+        compact(
+            'parents',
+            'totalParents',
+            'totalChildren'
+        )
+    );
+}
 };
 ?>

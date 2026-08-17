@@ -31,23 +31,29 @@ public function mount(): void
 {
     Gate::authorize('viewAny', User::class);
 }
-    public function render()
-    {
-        $classes = AcademyClass::withCount(['students'])
-            ->when($this->search, function ($query) {
-                $search = $this->search;
-//ILIKE is postgres only
-                $query->where(function ($query) use ($search) {
-                    $query->where('name', 'ILIKE', "%{$search}%")
-    ->orWhereHas('teacher', function ($query) use ($search) {
-                            $query->where('name', 'ILIKE', "%{$search}%");
-                        });
-                });
-            })
-            ->latest()
-            ->paginate(20);
+public function render()
+{
+    $baseQuery = AcademyClass::query()
+        ->when($this->search, function ($query) {
+            $search = $this->search;
 
- $allClasses = AcademyClass::withCount('students')->get();
+            $query->where(function ($query) use ($search) {
+                $query->where('name', 'ILIKE', "%{$search}%")
+                    ->orWhereHas('teacher', function ($query) use ($search) {
+                        $query->where('name', 'ILIKE', "%{$search}%");
+                    });
+            });
+        });
+
+    $classes = (clone $baseQuery)
+        ->with('teacher')
+        ->withCount('students')
+        ->latest()
+        ->paginate(20);
+
+    $allClasses = (clone $baseQuery)
+        ->withCount('students')
+        ->get(['id', 'capacity']);
 
     $totalClasses = $allClasses->count();
 
@@ -55,10 +61,19 @@ public function mount(): void
         ->filter(fn ($class) => $class->isFull())
         ->count();
 
-        $totalAvailableSeats = $allClasses
-            ->sum(fn (AcademyClass $class) => $class->availableSeats());
+    $totalAvailableSeats = $allClasses
+        ->sum(fn ($class) => $class->availableSeats());
 
-        return view('livewire.admin.classes.search',compact('classes','totalClasses','fullClasses','totalAvailableSeats'));
-    }
+    return view(
+        'livewire.admin.classes.search',
+        compact(
+            'classes',
+            'totalClasses',
+            'fullClasses',
+            'totalAvailableSeats'
+        )
+    );
+}
+
 };
 ?>
