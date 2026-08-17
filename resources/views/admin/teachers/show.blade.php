@@ -1,287 +1,516 @@
 <x-layouts::app :title="$teacher->name">
 
-<div class="space-y-6">
+<div class="space-y-8">
 
-    <div class="flex items-center justify-between">
+    {{-- Header --}}
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
 
-        <div>
+        <div class="space-y-2">
 
-            <h1 class="text-3xl font-bold text-zinc-900 dark:text-white">
-                {{ $teacher->name }}
-            </h1>
+            <div class="flex items-center gap-2">
 
-            <p class="mt-1 text-zinc-500">
-                Teacher Profile
-            </p>
-
-        </div>
-
-        <a
-            href="{{ route('admin.teachers.index') }}"
-            class="rounded-lg bg-zinc-700 px-4 py-2 text-white hover:bg-zinc-800">
-
-            Back
-
-        </a>
-
-    </div>
-
-
-    <div class="grid gap-6 md:grid-cols-3">
-
-        <div class="rounded-xl bg-white p-6 shadow dark:bg-zinc-900">
-
-            <h2 class="mb-4 text-lg font-semibold text-zinc-900 dark:text-white">
-                Information
-            </h2>
-
-            <dl class="space-y-3">
-
-                <div>
-                    <dt class="text-sm text-zinc-500">
-                        Name
-                    </dt>
-
-                    <dd class="font-medium text-zinc-900 dark:text-zinc-100">
-                        {{ $teacher->name }}
-                    </dd>
-                </div>
-
-                <div>
-                    <dt class="text-sm text-zinc-500">
-                        Email
-                    </dt>
-
-                    <dd class="font-medium text-zinc-900 dark:text-zinc-100">
-                        {{ $teacher->email }}
-                    </dd>
-                </div>
-
-                <div>
-                    <dt class="text-sm text-zinc-500">
-                        Phone
-                    </dt>
-
-                    <dd class="font-medium text-zinc-900 dark:text-zinc-100">
-                        {{ $teacher->phone ?? 'Not provided' }}
-                    </dd>
-                </div>
-
-            </dl>
-
-        </div>
-
-
-        <div class="rounded-xl bg-white p-6 shadow dark:bg-zinc-900">
-
-            <h2 class="mb-4 text-lg font-semibold text-zinc-900 dark:text-white">
-                Statistics
-            </h2>
-
-            <div class="space-y-3">
-
-                <div>
-
-                    <p class="text-sm text-zinc-500">
-                        Students
-                    </p>
-
-                    <p class="text-4xl font-bold text-blue-600">
-                        {{ $teacher->students->count() }}
-                    </p>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="rounded-xl bg-white p-6 shadow dark:bg-zinc-900">
-
-            <h2 class="mb-4 text-lg font-semibold text-zinc-900 dark:text-white">
-                Actions
-            </h2>
-
-            <div class="space-y-3">
-
-                <a
-                    href="{{route('admin.teachers.edit',$teacher)}}"
-                    class="block rounded-lg bg-blue-600 px-4 py-2 text-center text-white hover:bg-blue-700">
-
-                    Edit Teacher
-
-                </a>
-
-                <a
+                <flux:button
                     href="{{ route('admin.teachers.index') }}"
-                    class="block rounded-lg bg-zinc-600 px-4 py-2 text-center text-white hover:bg-zinc-700">
-
-                    All Teachers
-
-                </a>
+                    variant="ghost"
+                    size="sm"
+                    icon="arrow-left"
+                    inset
+                >
+                    Teachers
+                </flux:button>
 
             </div>
 
+            <flux:heading size="xl">
+                {{ $teacher->name }}
+            </flux:heading>
+
+            <flux:text class="text-zinc-500">
+                Teacher profile, classes, and assigned students.
+            </flux:text>
+
         </div>
-<div class="rounded-xl bg-white shadow dark:bg-zinc-900">
 
-    <div class="border-b p-6 dark:border-zinc-700">
-
-        <h2 class="text-xl font-semibold text-zinc-900 dark:text-white">
-            Assigned Classes
-        </h2>
+        <flux:button
+            href="{{ route('admin.teachers.edit', $teacher) }}"
+            variant="primary"
+            icon="pencil"
+        >
+            Edit Teacher
+        </flux:button>
 
     </div>
 
 
-    @if($teacher->classes->isEmpty())
+    {{-- Quick Stats --}}
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
 
-        <div class="p-6 text-zinc-500">
-            No classes assigned.
+        {{-- Students --}}
+        <flux:card class="flex items-center gap-4 p-5 dark:!bg-zinc-950 dark:border-zinc-800">
+
+            <div class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400">
+                <flux:icon name="users" class="size-5" />
+            </div>
+
+            <div>
+
+                <flux:text class="text-xs uppercase tracking-wide text-zinc-500">
+                    Students
+                </flux:text>
+
+                <flux:heading size="lg">
+                    {{ $teacher->students->count() }}
+                </flux:heading>
+
+            </div>
+
+        </flux:card>
+
+
+        {{-- Classes --}}
+        <flux:card class="flex items-center gap-4 p-5 dark:!bg-zinc-950 dark:border-zinc-800">
+
+            <div class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-violet-50 text-violet-600 dark:bg-violet-500/10 dark:text-violet-400">
+                <flux:icon name="academic-cap" class="size-5" />
+            </div>
+
+            <div>
+
+                <flux:text class="text-xs uppercase tracking-wide text-zinc-500">
+                    Classes
+                </flux:text>
+
+                <flux:heading size="lg">
+                    {{ $teacher->classes->count() }}
+                </flux:heading>
+
+            </div>
+
+        </flux:card>
+
+
+        {{-- Email --}}
+        <flux:card class="flex items-center gap-4 p-5 dark:!bg-zinc-950 dark:border-zinc-800">
+
+            <div class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">
+                <flux:icon name="envelope" class="size-5" />
+            </div>
+
+            <div class="min-w-0">
+
+                <flux:text class="text-xs uppercase tracking-wide text-zinc-500">
+                    Email
+                </flux:text>
+
+                <flux:text class="truncate font-medium">
+                    {{ $teacher->email }}
+                </flux:text>
+
+            </div>
+
+        </flux:card>
+
+
+        {{-- Phone --}}
+        <flux:card class="flex items-center gap-4 p-5 dark:!bg-zinc-950 dark:border-zinc-800">
+
+            <div class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400">
+                <flux:icon name="phone" class="size-5" />
+            </div>
+
+            <div class="min-w-0">
+
+                <flux:text class="text-xs uppercase tracking-wide text-zinc-500">
+                    Phone
+                </flux:text>
+
+                <flux:text class="truncate font-medium">
+                    {{ $teacher->phone ?? 'Not provided' }}
+                </flux:text>
+
+            </div>
+
+        </flux:card>
+
+    </div>
+
+
+    {{-- Teacher Information --}}
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+
+        {{-- Information --}}
+        <flux:card class="dark:!bg-zinc-950 dark:border-zinc-800">
+
+            <flux:heading size="lg">
+                Teacher Information
+            </flux:heading>
+
+            <div class="mt-5 divide-y divide-zinc-200 dark:divide-zinc-800">
+
+                <div class="flex items-center justify-between gap-4 py-3">
+
+                    <flux:text class="text-zinc-500">
+                        Name
+                    </flux:text>
+
+                    <flux:text class="text-right font-medium">
+                        {{ $teacher->name }}
+                    </flux:text>
+
+                </div>
+
+
+                <div class="flex items-center justify-between gap-4 py-3">
+
+                    <flux:text class="text-zinc-500">
+                        Email
+                    </flux:text>
+
+                    <flux:text class="text-right font-medium">
+                        {{ $teacher->email }}
+                    </flux:text>
+
+                </div>
+
+
+                <div class="flex items-center justify-between gap-4 py-3">
+
+                    <flux:text class="text-zinc-500">
+                        Phone
+                    </flux:text>
+
+                    <flux:text class="text-right font-medium">
+                        {{ $teacher->phone ?? 'Not provided' }}
+                    </flux:text>
+
+                </div>
+
+
+                <div class="flex items-center justify-between gap-4 py-3">
+
+                    <flux:text class="text-zinc-500">
+                        Students
+                    </flux:text>
+
+                    <flux:badge color="zinc">
+                        {{ $teacher->students->count() }}
+                    </flux:badge>
+
+                </div>
+
+
+                <div class="flex items-center justify-between gap-4 py-3">
+
+                    <flux:text class="text-zinc-500">
+                        Classes
+                    </flux:text>
+
+                    <flux:badge color="zinc">
+                        {{ $teacher->classes->count() }}
+                    </flux:badge>
+
+                </div>
+
+            </div>
+
+        </flux:card>
+
+
+        {{-- Profile --}}
+        <flux:card class="dark:!bg-zinc-950 dark:border-zinc-800">
+
+            <flux:heading size="lg">
+                Teacher
+            </flux:heading>
+
+            <div class="mt-5 flex items-center gap-4">
+
+                <div class="flex size-14 shrink-0 items-center justify-center rounded-full bg-blue-50 text-lg font-semibold text-blue-600 dark:bg-blue-500/10 dark:text-blue-400">
+
+                    {{ collect(explode(' ', $teacher->name))
+                        ->map(fn ($part) => $part[0] ?? '')
+                        ->take(2)
+                        ->implode('') }}
+
+                </div>
+
+                <div class="min-w-0">
+
+                    <flux:heading size="lg">
+                        {{ $teacher->name }}
+                    </flux:heading>
+
+                    <flux:text class="mt-1 truncate text-zinc-500">
+                        {{ $teacher->email }}
+                    </flux:text>
+
+                </div>
+
+            </div>
+
+
+            <div class="mt-6 flex gap-2">
+
+                <flux:button
+                    href="{{ route('admin.teachers.edit', $teacher) }}"
+                    variant="ghost"
+                    icon="pencil"
+                >
+                    Edit Profile
+                </flux:button>
+
+            </div>
+
+        </flux:card>
+
+    </div>
+
+
+    {{-- Assigned Classes --}}
+    <flux:card class="overflow-hidden p-0 dark:!bg-zinc-950 dark:border-zinc-800">
+
+        <div class="border-b border-zinc-200 px-6 py-5 dark:border-zinc-800">
+
+            <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+
+                <div>
+
+                    <flux:heading size="lg">
+                        Assigned Classes
+                    </flux:heading>
+
+                    <flux:text class="mt-1 text-zinc-500">
+                        Classes currently assigned to this teacher.
+                    </flux:text>
+
+                </div>
+
+                <flux:badge color="zinc">
+                    {{ $teacher->classes->count() }}
+                    {{ Str::plural('class', $teacher->classes->count()) }}
+                </flux:badge>
+
+            </div>
+
         </div>
 
-    @else
 
-        <table class="min-w-full">
+        @if($teacher->classes->count())
 
-            <thead class="bg-zinc-100 dark:bg-zinc-800">
-
-                <tr>
-
-                    <th class="px-6 py-3 text-left text-sm font-semibold text-zinc-700 dark:text-zinc-200">
-                        Name
-                    </th>
-
-                    <th class="px-6 py-3 text-left text-sm font-semibold text-zinc-700 dark:text-zinc-200">
-                        Code
-                    </th>
-
-                    <th class="px-6 py-3 text-left text-sm font-semibold text-zinc-700 dark:text-zinc-200">
-                        Students
-                    </th>
-
-                </tr>
-
-            </thead>
-
-
-            <tbody>
+            <div class="divide-y divide-zinc-200 dark:divide-zinc-800">
 
                 @foreach($teacher->classes as $class)
 
-                    <tr class="border-t dark:border-zinc-700">
+                    <div class="flex items-center justify-between gap-4 px-6 py-4 transition hover:bg-zinc-50 dark:hover:bg-zinc-900">
+
+                        <div class="flex min-w-0 items-center gap-3">
+
+                            <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-violet-50 text-violet-600 dark:bg-violet-500/10 dark:text-violet-400">
+
+                                <flux:icon
+                                    name="academic-cap"
+                                    class="size-5"
+                                />
+
+                            </div>
 
 
-                    <td class="px-6 py-4 font-medium">
+                            <div class="min-w-0">
 
-                        <a
+                                <flux:text class="truncate font-medium">
+                                    {{ $class->name }}
+                                </flux:text>
+
+                                <flux:text class="text-sm text-zinc-500">
+                                    {{ $class->students->count() }}
+                                    {{ Str::plural('student', $class->students->count()) }}
+
+                                    @if($class->code)
+                                        · {{ $class->code }}
+                                    @endif
+                                </flux:text>
+
+                            </div>
+
+                        </div>
+
+
+                        <flux:button
                             href="{{ route('admin.classes.show', $class) }}"
-                            class="font-medium text-blue-600 hover:underline dark:text-blue-400">
+                            variant="ghost"
+                            size="sm"
+                            icon="chevron-right"
+                            inset
+                        />
 
-                            {{ $class->name }}
-
-                        </a>
-
-                    </td>
-
-
-                        <td class="px-6 py-4 text-zinc-900 dark:text-zinc-100">
-                            {{ $class->code ?? '-' }}
-                        </td>
-
-                        <td class="px-6 py-4 text-zinc-900 dark:text-zinc-100">
-                            {{ $class->students->count() }}
-                        </td>
-
-                    </tr>
+                    </div>
 
                 @endforeach
 
-            </tbody>
-
-        </table>
-
-    @endif
-
-</div>
-    </div>
-
-
-    <div class="rounded-xl bg-white shadow dark:bg-zinc-900">
-
-        <div class="border-b p-6 dark:border-zinc-700">
-
-            <h2 class="text-xl font-semibold text-zinc-900 dark:text-white">
-                Assigned Students
-            </h2>
-
-        </div>
-
-
-        @if($teacher->students->isEmpty())
-
-            <div class="p-6 text-zinc-500">
-                No students assigned.
             </div>
 
         @else
 
-            <table class="min-w-full">
+            <div class="flex flex-col items-center justify-center px-6 py-16 text-center">
 
-                <thead class="bg-zinc-100 dark:bg-zinc-800">
+                <div class="mb-3 flex size-12 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-900">
 
-                    <tr>
+                    <flux:icon
+                        name="academic-cap"
+                        class="size-6 text-zinc-400"
+                    />
 
-                        <th class="px-6 py-3 text-left text-sm font-semibold text-zinc-700 dark:text-zinc-200">
-                            Name
-                        </th>
+                </div>
 
-                        <th class="px-6 py-3 text-left text-sm font-semibold text-zinc-700 dark:text-zinc-200">
-                            Email
-                        </th>
+                <flux:heading size="sm">
+                    No classes assigned
+                </flux:heading>
 
-                        <th class="px-6 py-3 text-left text-sm font-semibold text-zinc-700 dark:text-zinc-200">
-                            Status
-                        </th>
+                <flux:text class="mt-1 text-zinc-500">
+                    This teacher currently has no classes assigned.
+                </flux:text>
 
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    @foreach($teacher->students as $student)
-
-                        <tr class="border-t dark:border-zinc-700">
-
-                            <td class="px-6 py-4 text-zinc-900 dark:text-zinc-100">
-                                {{ $student->name }}
-                            </td>
-
-                            <td class="px-6 py-4 text-zinc-900 dark:text-zinc-100">
-                                {{ $student->email }}
-                            </td>
-
-                            <td class="px-6 py-4">
-
-                                <span class="rounded-full bg-green-100 px-3 py-1 text-sm text-green-700">
-                                    {{ ucfirst($student->status) }}
-                                </span>
-
-                            </td>
-
-                        </tr>
-
-                    @endforeach
-
-                </tbody>
-
-            </table>
+            </div>
 
         @endif
 
-    </div>
+    </flux:card>
+
+
+    {{-- Assigned Students --}}
+    <flux:card class="overflow-hidden p-0 dark:!bg-zinc-950 dark:border-zinc-800">
+
+        <div class="border-b border-zinc-200 px-6 py-5 dark:border-zinc-800">
+
+            <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+
+                <div>
+
+                    <flux:heading size="lg">
+                        Assigned Students
+                    </flux:heading>
+
+                    <flux:text class="mt-1 text-zinc-500">
+                        Students currently assigned to this teacher.
+                    </flux:text>
+
+                </div>
+
+                <flux:badge color="zinc">
+                    {{ $teacher->students->count() }}
+                    {{ Str::plural('student', $teacher->students->count()) }}
+                </flux:badge>
+
+            </div>
+
+        </div>
+
+
+        @if($teacher->students->count())
+
+            <div class="divide-y divide-zinc-200 dark:divide-zinc-800">
+
+                @foreach($teacher->students as $student)
+
+                    <div class="flex items-center justify-between gap-4 px-6 py-4 transition hover:bg-zinc-50 dark:hover:bg-zinc-900">
+
+                        <div class="flex min-w-0 items-center gap-3">
+
+                            {{-- Avatar --}}
+                            <div class="flex size-10 shrink-0 items-center justify-center rounded-full bg-zinc-100 text-sm font-semibold text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">
+
+                                {{ collect(explode(' ', $student->name))
+                                    ->map(fn ($part) => $part[0] ?? '')
+                                    ->take(2)
+                                    ->implode('') }}
+
+                            </div>
+
+
+                            <div class="min-w-0">
+
+                                <flux:text class="truncate font-medium">
+                                    {{ $student->name }}
+                                </flux:text>
+
+                                @if($student->email)
+
+                                    <flux:text class="truncate text-sm text-zinc-500">
+                                        {{ $student->email }}
+                                    </flux:text>
+
+                                @endif
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="flex items-center gap-3">
+
+                            @if($student->status)
+
+                                <flux:badge
+                                    color="{{ $student->status === 'active' ? 'emerald' : 'zinc' }}"
+                                    class="hidden sm:inline-flex"
+                                >
+                                    {{ ucfirst($student->status) }}
+                                </flux:badge>
+
+                            @endif
+
+
+                            <flux:button
+                                href="{{ route('admin.students.show', $student) }}"
+                                variant="ghost"
+                                size="sm"
+                                icon="chevron-right"
+                                inset
+                            />
+
+                        </div>
+
+                    </div>
+
+                @endforeach
+
+            </div>
+
+        @else
+
+            <div class="flex flex-col items-center justify-center px-6 py-16 text-center">
+
+                <div class="mb-3 flex size-12 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-900">
+
+                    <flux:icon
+                        name="users"
+                        class="size-6 text-zinc-400"
+                    />
+
+                </div>
+
+                <flux:heading size="sm">
+                    No students assigned
+                </flux:heading>
+
+                <flux:text class="mt-1 text-zinc-500">
+                    This teacher currently has no students assigned.
+                </flux:text>
+
+                <flux:button
+                    href="{{ route('admin.teachers.edit', $teacher) }}"
+                    variant="ghost"
+                    class="mt-4"
+                    icon="plus"
+                >
+                    Assign Students
+                </flux:button>
+
+            </div>
+
+        @endif
+
+    </flux:card>
 
 </div>
 

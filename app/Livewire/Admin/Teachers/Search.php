@@ -44,8 +44,8 @@ public function mount(): void
             })
             ->latest()
             ->paginate(20);
-
-        return view('livewire.admin.teachers.search',compact('teachers'));
+$totalTeachers=$teachers->total();
+        return view('livewire.admin.teachers.search',compact('teachers','totalTeachers'));
     }
 };
 ?>

@@ -1,106 +1,93 @@
 <x-layouts::app :title="__('Edit Teacher')">
 
-<div class="max-w-3xl space-y-6">
+<div class="space-y-8">
 
-    <h1 class="text-3xl font-bold">
-        Edit Teacher
-    </h1>
-
-    <form
-        id="teacher-update-form"
-        method="POST"
-        action="{{ route('admin.teachers.update', $teacher) }}"
-        class="space-y-5 rounded-xl bg-white p-6 shadow dark:bg-zinc-900">
-
-        @csrf
-        @method('PUT')
+    {{-- Header --}}
+    <div class="space-y-2">
 
         <div>
-            <label class="block font-medium">
-                Name
-            </label>
-
-            <input
-                type="text"
-                name="name"
-                value="{{ old('name', $teacher->name) }}"
-                class="mt-1 w-full rounded-lg border p-2">
+            <flux:button
+                href="{{ route('admin.teachers.index') }}"
+                variant="ghost"
+                size="sm"
+                icon="arrow-left"
+                inset
+            >
+                Teachers
+            </flux:button>
         </div>
 
-        <div>
-            <label class="block font-medium">
-                Email
-            </label>
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
 
-            <input
-                type="email"
-                name="email"
-                value="{{ old('email', $teacher->email) }}"
-                class="mt-1 w-full rounded-lg border p-2">
+            <div>
+
+                <flux:heading size="xl">
+                    Edit Teacher
+                </flux:heading>
+
+                <flux:text class="mt-1 text-zinc-500">
+                    Update {{ $teacher->name }}'s account and student assignments.
+                </flux:text>
+
+            </div>
+
+            <flux:badge
+                color="zinc"
+                icon="user"
+            >
+                {{ $teacher->name }}
+            </flux:badge>
+
         </div>
 
-        <div>
-            <label class="block font-medium">
-                Phone
-            </label>
+    </div>
 
-            <input
-                type="text"
-                name="phone"
-                value="{{ old('phone', $teacher->phone) }}"
-                class="mt-1 w-full rounded-lg border p-2">
-        </div>
 
-        <div>
-            <label class="block font-medium">
-                Students
-            </label>
+    {{-- Form --}}
+    <div class="max-w-3xl">
 
-            <select
-                id="students-select"
-                name="students[]"
-                multiple>
+        <flux:card class="dark:!bg-zinc-950 dark:border-zinc-800">
 
-                @foreach($students as $student)
-                    <option
-                        value="{{ $student->id }}"
-                        @selected($teacher->students->contains($student->id))>
-                        {{ $student->name }}
-                    </option>
-                @endforeach
+            @include('admin.teachers._form', [
+                'action' => route('admin.teachers.update', $teacher),
+                'method' => 'PUT',
+                'submitLabel' => 'Save Changes',
+                'teacher' => $teacher,
+                'students' => $students,
+            ])
 
-            </select>
-        </div>
+        </flux:card>
 
-        <div class="flex justify-end">
-            <button
-                type="submit"
-                class="rounded-lg bg-blue-600 px-5 py-2 text-white hover:bg-blue-700">
-                Save Changes
-            </button>
-        </div>
 
-    </form>
+        {{-- Delete --}}
+        <flux:card class="mt-6 border-red-200 dark:!bg-zinc-950 dark:border-red-950">
 
-<x-confirm-delete
-    name="{{ $teacher->name }}"
-    action="{{ route('admin.teachers.destroy', $teacher) }}"
-    modal="delete-teacher-{{ $teacher->id }}"
-/>
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 
+                <div>
+
+                    <flux:heading size="sm">
+                        Delete Teacher
+                    </flux:heading>
+
+                    <flux:text class="mt-1 text-zinc-500">
+                        Permanently remove this teacher account.
+                    </flux:text>
+
+                </div>
+
+                <x-confirm-delete
+                    name="{{ $teacher->name }}"
+                    action="{{ route('admin.teachers.destroy', $teacher) }}"
+                    modal="delete-teacher-{{ $teacher->id }}"
+                />
+
+            </div>
+
+        </flux:card>
+
+    </div>
 
 </div>
-
-@push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    new TomSelect('#students-select', {
-        plugins: ['remove_button'],
-        placeholder: 'Search students...',
-        create: false,
-    });
-});
-</script>
-@endpush
 
 </x-layouts::app>
