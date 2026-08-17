@@ -184,89 +184,136 @@
 
         </div>
 
+{{-- Enrollment Overview --}}
+<flux:card class="dark:!bg-zinc-950 dark:border-zinc-800">
 
-        {{-- Enrollment Overview --}}
-        <flux:card class="dark:!bg-zinc-950 dark:border-zinc-800">
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+            <flux:heading size="lg">
+                Enrollment Overview
+            </flux:heading>
 
-                <div>
+            <flux:text class="mt-1 text-zinc-500">
+                Current enrollment capacity across all classes.
+            </flux:text>
+        </div>
 
-                    <flux:heading size="lg">
-                        Enrollment Overview
-                    </flux:heading>
+        @if($totalCapacity > 0)
 
-                    <flux:text class="mt-1 text-zinc-500">
-                        Current student capacity across all classes.
-                    </flux:text>
+            @php
+                $enrollmentPercentage = round(
+                    ($totalEnrolled / $totalCapacity) * 100
+                );
 
-                </div>
+                $statusColor = match (true) {
+                    $enrollmentPercentage >= 90 => 'red',
+                    $enrollmentPercentage >= 75 => 'amber',
+                    default => 'emerald',
+                };
 
-                @if(isset($totalCapacity) && $totalCapacity > 0)
+                $barColor = match (true) {
+                    $enrollmentPercentage >= 90 => 'bg-red-500',
+                    $enrollmentPercentage >= 75 => 'bg-amber-500',
+                    default => 'bg-emerald-500',
+                };
+            @endphp
 
-                    @php
-                        $enrollmentPercentage = round(
-                            ($totalEnrolled / $totalCapacity) * 100
-                        );
-                    @endphp
+            <flux:badge color="{{ $statusColor }}">
+                {{ $enrollmentPercentage }}% occupied
+            </flux:badge>
 
-                    <flux:badge
-                        color="{{ $enrollmentPercentage >= 90 ? 'red' : ($enrollmentPercentage >= 75 ? 'amber' : 'emerald') }}"
-                    >
-                        {{ $enrollmentPercentage }}% occupied
-                    </flux:badge>
+        @endif
 
-                @endif
+    </div>
+
+
+    @if($totalCapacity > 0)
+
+        {{-- Numbers --}}
+        <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+
+            <div class="rounded-xl bg-zinc-50 p-4 dark:bg-zinc-900">
+
+                <flux:text class="text-xs uppercase tracking-wide text-zinc-500">
+                    Enrollments
+                </flux:text>
+
+                <flux:heading size="lg" class="mt-1">
+                    {{ $totalEnrolled }}
+                </flux:heading>
 
             </div>
 
 
-            @if(isset($totalCapacity) && $totalCapacity > 0)
+            <div class="rounded-xl bg-zinc-50 p-4 dark:bg-zinc-900">
 
-                <div class="mt-6">
+                <flux:text class="text-xs uppercase tracking-wide text-zinc-500">
+                    Total Capacity
+                </flux:text>
 
-                    <div class="mb-2 flex items-center justify-between">
+                <flux:heading size="lg" class="mt-1">
+                    {{ $totalCapacity }}
+                </flux:heading>
 
-                        <flux:text class="text-sm text-zinc-500">
-                            {{ $totalEnrolled }} students enrolled
-                        </flux:text>
+            </div>
 
-                        <flux:text class="text-sm font-medium">
-                            {{ $totalEnrolled }} / {{ $totalCapacity }}
-                        </flux:text>
 
-                    </div>
+            <div class="rounded-xl bg-zinc-50 p-4 dark:bg-zinc-900">
 
-                    <div class="h-3 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800">
+                <flux:text class="text-xs uppercase tracking-wide text-zinc-500">
+                    Available Seats
+                </flux:text>
 
-                        <div
-                            class="h-full rounded-full transition-all
-                                {{ $enrollmentPercentage >= 90
-                                    ? 'bg-red-500'
-                                    : ($enrollmentPercentage >= 75
-                                        ? 'bg-amber-500'
-                                        : 'bg-emerald-500') }}"
-                            style="width: {{ min($enrollmentPercentage, 100) }}%"
-                        ></div>
+                <flux:heading size="lg" class="mt-1">
+                    {{ max(0, $totalCapacity - $totalEnrolled) }}
+                </flux:heading>
 
-                    </div>
+            </div>
 
-                </div>
+        </div>
 
-            @else
 
-                <div class="mt-6 rounded-xl bg-zinc-50 p-6 text-center dark:bg-zinc-900">
+        {{-- Progress --}}
+        <div class="mt-6">
 
-                    <flux:text class="text-zinc-500">
-                        No enrollment data available yet.
-                    </flux:text>
+            <div class="mb-2 flex items-center justify-between">
 
-                </div>
+                <flux:text class="text-sm text-zinc-500">
+                    Capacity usage
+                </flux:text>
 
-            @endif
+                <flux:text class="text-sm font-medium">
+                    {{ $totalEnrolled }} / {{ $totalCapacity }}
+                </flux:text>
 
-        </flux:card>
+            </div>
 
+
+            <div class="h-3 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800">
+
+                <div
+                    class="h-full rounded-full transition-all {{ $barColor }}"
+                    style="width: {{ min($enrollmentPercentage, 100) }}%"
+                ></div>
+
+            </div>
+
+        </div>
+
+    @else
+
+        <div class="mt-6 rounded-xl bg-zinc-50 p-6 text-center dark:bg-zinc-900">
+
+            <flux:text class="text-zinc-500">
+                No class capacity available yet.
+            </flux:text>
+
+        </div>
+
+    @endif
+
+</flux:card>
 
         {{-- Main Grid --}}
         <div class="grid grid-cols-1 gap-6 xl:grid-cols-3">

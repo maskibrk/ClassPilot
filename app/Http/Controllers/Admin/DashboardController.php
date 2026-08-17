@@ -7,6 +7,7 @@ use App\Models\AcademyClass;
 use App\Models\Student;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -22,7 +23,7 @@ public function index()
 
     $totalCapacity = AcademyClass::sum('capacity');
 
-    $totalEnrolled = Student::whereHas('classes')->count();
+$totalEnrolled = DB::table('academy_class_student')->count();
 
 $classes = AcademyClass::withCount('students')->get();
 
