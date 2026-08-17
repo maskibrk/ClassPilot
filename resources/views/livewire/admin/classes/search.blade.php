@@ -207,15 +207,16 @@
 
                             {{-- Actions --}}
                             <td class="px-6 py-4 text-right">
-
-                                <flux:button
-                                    href="{{ route('admin.classes.show', $class) }}"
-                                    variant="ghost"
-                                    size="sm"
-                                    icon="chevron-right"
-                                    inset
-                                />
-
+        {{-- Edit --}}
+        <flux:button
+            href="{{ route('admin.classes.edit', $class) }}"
+            variant="ghost"
+            size="sm"
+            icon="pencil"
+            inset
+        >
+            Edit
+        </flux:button>
                             </td>
 
                         </tr>

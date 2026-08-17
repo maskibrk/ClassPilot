@@ -139,15 +139,6 @@
                             >
 
                                 <span
-                                    class="flex size-9 shrink-0 items-center justify-center rounded-full bg-blue-50 text-sm font-semibold text-blue-600 dark:bg-blue-500/10 dark:text-blue-400"
-                                >
-                                    {{ collect(explode(' ', $parent->name))
-                                        ->map(fn ($p) => $p[0] ?? '')
-                                        ->take(2)
-                                        ->implode('') }}
-                                </span>
-
-                                <span
                                     class="font-medium text-zinc-900 hover:text-blue-600 hover:underline dark:text-zinc-100 dark:hover:text-blue-400"
                                 >
                                     {{ $parent->name }}
@@ -202,18 +193,22 @@
                         </td>
 
 
-                        {{-- Actions --}}
-                        <td class="px-6 py-4 text-right">
+{{-- Actions --}}
+<td class="px-6 py-4 text-right">
 
-                            <flux:button
-                                href="{{ route('admin.parents.show', $parent) }}"
-                                variant="ghost"
-                                size="sm"
-                                icon="chevron-right"
-                                inset
-                            />
+    <div class="flex items-center justify-end gap-2">
 
-                        </td>
+        {{-- Edit --}}
+        <flux:button
+            href="{{ route('admin.parents.edit', $parent) }}"
+            variant="ghost"
+            size="sm"
+            icon="pencil"
+            inset
+        >
+            Edit
+        </flux:button>
+</td>
 
                     </tr>
 
