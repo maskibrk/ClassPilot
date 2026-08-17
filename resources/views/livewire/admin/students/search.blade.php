@@ -1,102 +1,308 @@
-<div class="space-y-4">
+<div class="space-y-6">
+{{-- Quick Stats --}}
+<div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
 
-    {{-- Search --}}
-    <div class="relative">
+    {{-- Total Students --}}
+    <flux:card class="flex items-center gap-4 p-5 dark:!bg-zinc-950 dark:border-zinc-800">
 
-        <input
-            type="search"
-            wire:model.live.debounce.300ms="search"
-            placeholder="Search students..."
-            class="w-full rounded-lg border border-zinc-300 px-4 py-2
-                   dark:border-zinc-700 dark:bg-zinc-800"
-        >
-
-        <div
-            wire:loading
-            wire:target="search"
-            class="absolute right-3 top-1/2 -translate-y-1/2"
-        >
-            Searching...
+        <div class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400">
+            <flux:icon name="users" class="size-5" />
         </div>
+
+        <div>
+
+            <flux:text class="text-xs uppercase tracking-wide text-zinc-500">
+                Total Students
+            </flux:text>
+
+            <flux:heading size="lg">
+                {{ $totalStudents ?? '—' }}
+            </flux:heading>
+
+        </div>
+
+    </flux:card>
+
+
+</div>
+    {{-- Search --}}
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+
+        <flux:field class="flex-1">
+
+            <div class="relative">
+
+                <flux:input
+                    type="search"
+                    wire:model.live.debounce.300ms="search"
+                    placeholder="Search by student name..."
+                    icon="magnifying-glass"
+                />
+
+                <div
+                    wire:loading
+                    wire:target="search"
+                    class="absolute right-3 top-1/2 -translate-y-1/2"
+                >
+                    <flux:icon
+                        name="arrow-path"
+                        class="size-4 animate-spin text-zinc-400"
+                    />
+                </div>
+
+            </div>
+
+        </flux:field>
 
     </div>
 
 
-    {{-- Table --}}
-    <div class="overflow-hidden rounded-xl bg-white shadow dark:bg-zinc-900">
+    {{-- Students Table --}}
+    <flux:card class="overflow-hidden p-0 dark:!bg-zinc-950 dark:border-zinc-800">
 
-        <table class="min-w-full">
+        <div class="overflow-x-auto">
 
-            <thead class="bg-zinc-100 dark:bg-zinc-800">
+            <table class="w-full text-sm">
 
-                <tr>
-                    <th class="px-6 py-3 text-left">Name</th>
-                    <th class="px-6 py-3 text-left">Teachers</th>
-                    <th class="px-6 py-3 text-left">Parent</th>
-                    <th class="px-6 py-3 text-left">Status</th>
-                </tr>
-
-            </thead>
-
-            <tbody>
-
-            @forelse($students as $student)
-
-                <tr
-                    wire:key="student-{{ $student->id }}"
-                    class="border-t dark:border-zinc-700"
+                {{-- Header --}}
+                <thead
+                    class="border-b border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900"
                 >
 
-                    <td class="px-6 py-4">
-                        <a
-                            href="{{ route('admin.students.show', $student) }}"
-                            class="text-blue-600 hover:underline"
+                    <tr>
+
+                        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                            Student
+                        </th>
+
+                        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                            Teachers
+                        </th>
+
+                        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                            Parent
+                        </th>
+
+                        <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                            Status
+                        </th>
+
+                        <th class="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                            <span class="sr-only">Actions</span>
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                {{-- Body --}}
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800">
+
+                    @forelse($students as $student)
+
+                        <tr
+                            wire:key="student-{{ $student->id }}"
+                            class="transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-900"
                         >
-                            {{ $student->name }}
-                        </a>
-                    </td>
 
-                    <td class="px-6 py-4">
-                        @forelse($student->teachers as $teacher)
-<span class="mr-1 rounded bg-blue-100 px-2 py-1 text-sm text-blue-800
-             dark:bg-blue-950 dark:text-blue-200">
-    {{ $teacher->name }}
-</span>
-                        @empty
-                            <span class="text-zinc-500">
-                                No teacher
-                            </span>
-                        @endforelse
-                    </td>
+                            {{-- Student --}}
+                            <td class="px-6 py-4">
 
-                    <td class="px-6 py-4">
-                        {{ $student->parent?->name ?? 'No parent' }}
-                    </td>
+                                <a
+                                    href="{{ route('admin.students.show', $student) }}"
+                                    class="flex items-center gap-3"
+                                >
 
-                    <td class="px-6 py-4">
-                        {{ ucfirst($student->status) }}
-                    </td>
+                                    {{-- Avatar --}}
+                                    <span
+                                        class="flex size-9 shrink-0 items-center justify-center rounded-full bg-zinc-100 text-sm font-semibold text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300"
+                                    >
+                                        {{ collect(explode(' ', $student->name))
+                                            ->map(fn ($part) => $part[0] ?? '')
+                                            ->take(2)
+                                            ->implode('') }}
+                                    </span>
 
-                </tr>
 
-            @empty
+                                    <span class="min-w-0">
 
-                <tr>
-                    <td colspan="4" class="px-6 py-10 text-center text-zinc-500">
-                        No students found.
-                    </td>
-                </tr>
+                                        <span
+                                            class="block font-medium text-zinc-900 hover:text-blue-600 hover:underline dark:text-zinc-100 dark:hover:text-blue-400"
+                                        >
+                                            {{ $student->name }}
+                                        </span>
 
-            @endforelse
+                                        @if($student->email)
 
-            </tbody>
+                                            <span class="block truncate text-sm text-zinc-500">
+                                                {{ $student->email }}
+                                            </span>
 
-        </table>
+                                        @endif
 
-        <div class="border-t px-6 py-4">
-            {{ $students->links() }}
+                                    </span>
+
+                                </a>
+
+                            </td>
+
+
+                            {{-- Teachers --}}
+                            <td class="px-6 py-4">
+
+                                @if($student->teachers->count())
+
+                                    <div class="flex flex-wrap gap-1.5">
+
+                                        @foreach($student->teachers as $teacher)
+
+                                            <a
+                                                href="{{ route('admin.teachers.show', $teacher) }}"
+                                                class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 hover:bg-blue-100 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20"
+                                            >
+                                                {{ $teacher->name }}
+                                            </a>
+
+                                        @endforeach
+
+                                    </div>
+
+                                @else
+
+                                    <flux:text class="text-zinc-500">
+                                        No teacher
+                                    </flux:text>
+
+                                @endif
+
+                            </td>
+
+
+                            {{-- Parent --}}
+                            <td class="px-6 py-4">
+
+                                @if($student->parent)
+
+                                    <a
+                                        href="{{ route('admin.parents.show', $student->parent) }}"
+                                        class="font-medium text-zinc-700 hover:text-blue-600 hover:underline dark:text-zinc-300 dark:hover:text-blue-400"
+                                    >
+                                        {{ $student->parent->name }}
+                                    </a>
+
+                                @else
+
+                                    <flux:text class="text-zinc-500">
+                                        No parent
+                                    </flux:text>
+
+                                @endif
+
+                            </td>
+
+
+                            {{-- Status --}}
+                            <td class="px-6 py-4">
+
+                                @if($student->status === 'active')
+
+                                    <flux:badge
+                                        color="emerald"
+                                        icon="check-circle"
+                                    >
+                                        Active
+                                    </flux:badge>
+
+                                @else
+
+                                    <flux:badge
+                                        color="zinc"
+                                    >
+                                        {{ ucfirst($student->status) }}
+                                    </flux:badge>
+
+                                @endif
+
+                            </td>
+
+
+                            {{-- Actions --}}
+                            <td class="px-6 py-4 text-right">
+
+        {{-- Edit --}}
+        <flux:button
+            href="{{ route('admin.students.edit', $student) }}"
+            variant="ghost"
+            size="sm"
+            icon="pencil"
+            inset
+        >
+            Edit
+        </flux:button>
+                            </td>
+
+                        </tr>
+
+
+                    @empty
+
+                        {{-- Empty State --}}
+                        <tr>
+
+                            <td
+                                colspan="5"
+                                class="px-6 py-16"
+                            >
+
+                                <div class="flex flex-col items-center justify-center text-center">
+
+                                    <div
+                                        class="mb-3 flex size-12 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-900"
+                                    >
+
+                                        <flux:icon
+                                            name="users"
+                                            class="size-6 text-zinc-400"
+                                        />
+
+                                    </div>
+
+
+                                    <flux:heading size="sm">
+                                        No students found
+                                    </flux:heading>
+
+                                    <flux:text class="mt-1 text-zinc-500">
+                                        Try adjusting your search.
+                                    </flux:text>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    @endforelse
+
+                </tbody>
+
+            </table>
+
         </div>
 
-    </div>
+
+        {{-- Pagination --}}
+        @if($students->hasPages())
+
+            <div class="border-t border-zinc-200 px-6 py-4 dark:border-zinc-800">
+
+                {{ $students->links() }}
+
+            </div>
+
+        @endif
+
+    </flux:card>
 
 </div>

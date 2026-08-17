@@ -28,28 +28,6 @@
     </div>
 
 
-    {{-- Success Message --}}
-    @if(session('success'))
-
-        <flux:card class="border-emerald-200 bg-emerald-50 dark:border-emerald-900 dark:bg-emerald-950/30">
-
-            <div class="flex items-center gap-3">
-
-                <flux:icon
-                    name="check-circle"
-                    class="size-5 text-emerald-600 dark:text-emerald-400"
-                />
-
-                <flux:text class="text-emerald-700 dark:text-emerald-300">
-                    {{ session('success') }}
-                </flux:text>
-
-            </div>
-
-        </flux:card>
-
-    @endif
-
 
     {{-- Teachers --}}
     <div>

@@ -1,37 +1,38 @@
 <x-layouts::app :title="__('Students')">
 
-<div class="space-y-6">
+    <div class="space-y-8">
 
-    <div class="flex items-center justify-between">
+        {{-- Header --}}
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
 
-        <div>
-            <h1 class="text-3xl font-bold">
-                Students
-            </h1>
+            <div class="space-y-1">
 
-            <p class="text-zinc-500">
-                Manage all students.
-            </p>
+                <flux:heading size="xl">
+                    Students
+                </flux:heading>
+
+                <flux:text class="text-zinc-500">
+                    Manage students, teachers, and parent assignments.
+                </flux:text>
+
+            </div>
+
+            <flux:button
+                href="{{ route('admin.students.create') }}"
+                variant="primary"
+                icon="plus"
+            >
+                Add Student
+            </flux:button>
+
         </div>
 
-        <a
-            href="{{ route('admin.students.create') }}"
-            class="rounded-lg bg-green-600 px-5 py-2 text-white hover:bg-green-700"
-        >
-            + Add Student
-        </a>
+
+
+
+        {{-- Livewire --}}
+        <livewire:admin.students.search />
 
     </div>
-
-    @if(session('success'))
-        <div class="rounded-lg bg-green-100 p-4 text-green-700">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    {{-- Livewire handles only search + table --}}
-    <livewire:admin.students.search />
-
-</div>
 
 </x-layouts::app>

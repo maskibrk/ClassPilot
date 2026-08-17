@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use function Illuminate\Support\now;
 
 class StudentController extends Controller
 {
@@ -88,10 +89,7 @@ class StudentController extends Controller
                 'required'
             ],
 
-            'join_date' => [
-                'nullable',
-                'date'
-            ],
+
         ]);
 
         $user = User::create([
@@ -109,7 +107,7 @@ class StudentController extends Controller
             'phone' => $validated['phone'] ?? null,
             'notes' => $validated['notes'] ?? null,
             'status' => $validated['status'],
-            'join_date' => $validated['join_date'] ?? null,
+            'join_date' => now(),
         ]);
 
         $student->teachers()->attach($validated['teachers']);
@@ -196,11 +194,6 @@ class StudentController extends Controller
             'status' => [
                 'required',
                 'in:active,inactive'
-            ],
-
-            'join_date' => [
-                'nullable',
-                'date'
             ],
 
             'parent_id' => [

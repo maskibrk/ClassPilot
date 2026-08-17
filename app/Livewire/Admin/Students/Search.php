@@ -42,8 +42,8 @@ public function mount(): void
             })
             ->latest()
             ->paginate(20);
-
-        return view('livewire.admin.students.search',compact('students'));
+$totalStudents=$students->total();
+        return view('livewire.admin.students.search',compact('students','totalStudents'));
     }
 };
 ?>

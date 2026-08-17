@@ -1,147 +1,88 @@
 <x-layouts::app :title="__('Edit Student')">
 
-    <div class="max-w-3xl space-y-6">
+    <div class="space-y-8">
 
-        <h1 class="text-3xl font-bold">
-            Edit Student
-        </h1>
+        {{-- Header --}}
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
 
-        <!-- Update Student Form -->
-        <form
-            method="POST"
-            action="{{ route('admin.students.update', $student) }}"
-            class="space-y-5 rounded-xl bg-white p-6 shadow dark:bg-zinc-900">
+            <div class="space-y-2">
 
-            @csrf
-            @method('PUT')
+                <div>
 
-            <div>
-                <label class="block font-medium">Name</label>
+                    <flux:button
+                        href="{{ route('admin.students.index') }}"
+                        variant="ghost"
+                        size="sm"
+                        icon="arrow-left"
+                        inset
+                    >
+                        Students
+                    </flux:button>
 
-                <input
-                    type="text"
-                    name="name"
-                    value="{{ old('name', $student->name) }}"
-                    class="mt-1 w-full rounded-lg border p-2">
+                </div>
+
+                <flux:heading size="xl">
+                    Edit Student
+                </flux:heading>
+
+                <flux:text class="text-zinc-500">
+                    Update {{ $student->name }}'s information and assignments.
+                </flux:text>
+
             </div>
 
-            <div>
-                <label class="block font-medium">Email</label>
+            <flux:button
+                href="{{ route('admin.students.show', $student) }}"
+                variant="ghost"
+                icon="eye"
+            >
+                View Student
+            </flux:button>
 
-                <input
-                    type="email"
-                    name="email"
-                    value="{{ old('email', $student->email) }}"
-                    class="mt-1 w-full rounded-lg border p-2">
-            </div>
+        </div>
 
-            <div>
-                <label class="block font-medium">Phone</label>
 
-                <input
-                    type="text"
-                    name="phone"
-                    value="{{ old('phone', $student->phone) }}"
-                    class="mt-1 w-full rounded-lg border p-2">
-            </div>
+        {{-- Form --}}
+        <div class="max-w-3xl">
 
-            <div>
-                <label class="block font-medium">Parent</label>
+            <flux:card class="dark:!bg-zinc-950 dark:border-zinc-800">
 
-                <select
-                    name="parent_id"
-                    class="w-full rounded-lg border p-2">
+                @include('admin.students._form', [
+                    'action' => route('admin.students.update', $student),
+                    'method' => 'PUT',
+                    'submitLabel' => 'Save Changes',
+                    'student' => $student,
+                ])
 
-                    <option value="">No Parent</option>
+            </flux:card>
 
-                    @foreach($parents as $parent)
-                        <option
-                            value="{{ $parent->id }}"
-                            @selected($student->parent_id == $parent->id)>
-                            {{ $parent->name }}
-                        </option>
-                    @endforeach
+{{-- Delete --}}
+<div class="mt-6">
 
-                </select>
-            </div>
+    <flux:card class="border-red-200 dark:border-red-900/50 dark:!bg-zinc-950">
 
-<div>
-    <label class="block font-medium">Teachers</label>
+        <flux:heading size="lg">
+            Delete Student
+        </flux:heading>
 
-    <select
-        id="teachers-select"
-        name="teachers[]"
-        multiple
-        class="w-full rounded-lg border p-2">
+        <flux:text class="mt-1 text-zinc-500">
+            Permanently remove this student account.
+            This action cannot be undone.
+        </flux:text>
 
-        @foreach($teachers as $teacher)
-            <option
-                value="{{ $teacher->id }}"
-                data-email="{{ $teacher->email }}"
-                data-initials="{{ collect(explode(' ', $teacher->name))->map(fn($p) => Str::substr($p, 0, 1))->take(2)->implode('') }}"
-                @selected($student->teachers->contains($teacher->id))>
-                {{ $teacher->name }}
-            </option>
-        @endforeach
+        <div class="mt-5">
 
-    </select>
+            <x-confirm-delete
+                name="{{ $student->name }}"
+                action="{{ route('admin.students.destroy', $student) }}"
+                modal="delete-student-{{ $student->id }}"
+            />
+
+        </div>
+
+    </flux:card>
+
 </div>
-            <div>
-                <label class="block font-medium">Status</label>
 
-                <select
-                    name="status"
-                    class="w-full rounded-lg border p-2">
-
-                    <option
-                        value="active"
-                        @selected($student->status === 'active')>
-                        Active
-                    </option>
-
-                    <option
-                        value="inactive"
-                        @selected($student->status === 'inactive')>
-                        Inactive
-                    </option>
-
-                </select>
-            </div>
-
-            <button
-                type="submit"
-                class="rounded-lg bg-blue-600 px-5 py-2 text-white hover:bg-blue-700">
-                Save Changes
-            </button>
-
-        </form>
-
-        <!-- Delete Student Form -->
-<x-confirm-delete
-    name="{{ $student->name }}"
-    action="{{ route('admin.students.destroy', $student) }}"
-    modal="delete-student-{{ $student->id }}"
-/>
-
-    </div>
-
-@push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    new TomSelect('#teachers-select', {
-        plugins: ['remove_button'],
-        create: false,
-        persist: false,
-        placeholder: 'Select teachers...',
-        hideSelected: true,
-        closeAfterSelect: false,
-    });
-});
-</script>
-
-@endpush
 
 </x-layouts::app>
-

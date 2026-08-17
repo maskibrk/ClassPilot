@@ -30,20 +30,14 @@ Route::middleware(['auth', 'role:admin'])
     ->name('admin.')
     ->group(function () {
 
-        Route::view('dashboard', 'admin.dashboard')->name('dashboard');
 
-        /* Route::resource('students', AdminStudentController::class); */
 
         Route::resource('teachers', TeacherController::class);
 
         Route::resource('parents', ParentController::class);
-
-  // Students
-/* Route::livewire('students', 'admin.students.index') */
-/*     ->name('students.index'); */
+Route::get('dashboard', [DashboardController::class,'index'])->name('dashboard');
 
         Route::resource('students', AdminStudentController::class);
-            /* ->except(['index']); */
 
         Route::resource('classes', AdminAcademicClassController::class);
     });
