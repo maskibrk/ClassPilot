@@ -102,26 +102,6 @@
                 multiple
                 class="w-full"
             >
-                @foreach($students as $student)
-
-                    <option
-                        value="{{ $student->id }}"
-                        @selected(
-                            in_array(
-                                $student->id,
-                                old(
-                                    'students',
-                                    isset($class)
-                                        ? $class->students->pluck('id')->toArray()
-                                        : []
-                                )
-                            )
-                        )
-                    >
-                        {{ $student->name }}
-                    </option>
-
-                @endforeach
             </select>
         </div>
 
@@ -161,24 +141,85 @@
 
 </div>
 
-
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 
-    new TomSelect('#students-select', {
+    const teacherSelect = new TomSelect('#teacher-select', {
+        placeholder: 'Search teacher...',
+        create: false,
+        maxItems: 1,
+        searchField: ['text'],
+    });
+
+    const studentsSelect = new TomSelect('#students-select', {
         plugins: ['remove_button'],
         placeholder: 'Search students...',
         create: false,
     });
-new TomSelect('#teacher-select', {
-    placeholder: 'Search teacher...',
-    create: false,
-    maxItems: 1,
-    searchField: ['text'],
-});
+
+    async function loadStudents(teacherId, selectedStudents = []) {
+
+        studentsSelect.clear();
+        studentsSelect.clearOptions();
+
+        if (!teacherId) {
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                `/admin/teachers/${teacherId}/students`
+            );
+
+            if (!response.ok) {
+                throw new Error('Failed to load students');
+            }
+
+            const students = await response.json();
+
+            students.forEach(student => {
+                studentsSelect.addOption({
+                    value: student.id,
+                    text: student.name,
+                });
+            });
+
+            studentsSelect.refreshOptions(false);
+
+            selectedStudents.forEach(studentId => {
+                if (studentsSelect.options[studentId]) {
+                    studentsSelect.addItem(studentId);
+                }
+            });
+
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    teacherSelect.on('change', function(teacherId) {
+        loadStudents(teacherId);
+    });
+
+    // Load students for the currently selected teacher
+    const initialTeacher = teacherSelect.getValue();
+
+    if (initialTeacher) {
+
+        const selectedStudents = @json(
+            old(
+                'students',
+                isset($class)
+                    ? $class->students->pluck('id')->toArray()
+                    : []
+            )
+        );
+
+        loadStudents(initialTeacher, selectedStudents);
+    }
+
 });
 </script>
 @endpush
-
 

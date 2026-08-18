@@ -29,10 +29,10 @@ Gate::authorize('viewAny', AcademyClass::class);
     {
 
         Gate::authorize('create', AcademyClass::class);
-        $students = Student::orderBy('name')->get();
+
         $teachers = User::teachers()->orderBy('name')->get();
 
-        return view('admin.classes.create', compact('students', 'teachers'));
+        return view('admin.classes.create', compact('teachers'));
     }
 
     /**
@@ -115,9 +115,7 @@ Gate::authorize('viewAny', AcademyClass::class);
 
         $teachers = User::teachers()->orderBy('name')->get();
 
-        $students = Student::orderBy('name')->get();
-
-        return view('admin.classes.edit', compact('class', 'teachers', 'students'));
+        return view('admin.classes.edit', compact('class', 'teachers'));
     }
 
     /**
@@ -171,4 +169,16 @@ Gate::authorize('viewAny', AcademyClass::class);
             ->route('admin.classes.index')
             ->with('success', 'Class deleted successfully.');
     }
+
+public function students(User $teacher)
+{
+    Gate::authorize('view', $teacher);
+
+    return response()->json(
+        $teacher->students()
+            ->select('students.id', 'students.name')
+            ->orderBy('students.name')
+            ->get()
+    );
+}
 }

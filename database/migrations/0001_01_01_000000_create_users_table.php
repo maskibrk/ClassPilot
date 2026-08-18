@@ -12,13 +12,9 @@ return new class extends Migration
             $table->id();
 
             // Role-based access. Admin/Teacher manage the workspace,
-            // Student/Parent are portal-only accounts.
             $table->enum('role', ['admin', 'teacher', 'student', 'parent'])
                 ->default('teacher');
 
-            // Multi-tenancy anchor: for student/parent accounts, this points
-            // to the teacher whose workspace they belong to. Null for
-            // teacher/admin accounts (a teacher IS the tenant boundary).
             $table->foreignId('teacher_id')
                 ->nullable()
                 ->constrained('users')

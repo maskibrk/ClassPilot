@@ -40,6 +40,10 @@ Route::get('dashboard', [DashboardController::class,'index'])->name('dashboard')
         Route::resource('students', AdminStudentController::class);
 
         Route::resource('classes', AdminAcademicClassController::class);
+Route::get(
+    'teachers/{teacher}/students',
+    [AdminAcademicClassController::class, 'students']
+)->name('teachers.students');
     });
 
 Route::middleware(['auth', 'role:teacher'])
