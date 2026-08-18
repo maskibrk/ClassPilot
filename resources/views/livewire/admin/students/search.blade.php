@@ -22,7 +22,46 @@
         </div>
 
     </flux:card>
+ {{-- Students without parent--}}
+    <flux:card class="flex items-center gap-4 p-5 dark:!bg-zinc-950 dark:border-zinc-800">
 
+    <div class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400">
+        <flux:icon name="user-minus" class="size-5" />
+    </div>
+
+        <div>
+
+            <flux:text class="text-xs uppercase tracking-wide text-zinc-500">
+                    Students with no parent assigned
+            </flux:text>
+
+            <flux:heading size="lg">
+                {{ $studentsWithoutParent ?? '—' }}
+            </flux:heading>
+
+        </div>
+
+    </flux:card>
+
+ {{-- Students without teachers --}}
+    <flux:card class="flex items-center gap-4 p-5 dark:!bg-zinc-950 dark:border-zinc-800">
+
+    <div class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400">
+        <flux:icon name="academic-cap" class="size-5" />
+    </div>
+        <div>
+
+            <flux:text class="text-xs uppercase tracking-wide text-zinc-500">
+                Students without teachers
+            </flux:text>
+
+            <flux:heading size="lg">
+                {{ $studentsWithoutTeachers ?? '—' }}
+            </flux:heading>
+
+        </div>
+
+    </flux:card>
 
 </div>
     {{-- Search --}}
@@ -54,6 +93,16 @@
 
         </flux:field>
 
+
+    {{-- Status Filter --}}
+    <flux:select
+        wire:model.live="status"
+        class="w-full sm:w-48"
+    >
+        <flux:select.option value="">All statuses</flux:select.option>
+        <flux:select.option value="no_parent">without parent</flux:select.option>
+        <flux:select.option value="no_teachers">without teachers</flux:select.option>
+    </flux:select>
     </div>
 
 

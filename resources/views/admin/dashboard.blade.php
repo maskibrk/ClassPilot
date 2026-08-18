@@ -457,7 +457,8 @@
                     @if(($fullClasses ?? 0) > 0)
 
                         <a
-                            href="{{ route('admin.classes.index') }}"
+                            href="{{ route('admin.classes.index',['status'=>'full'] )}}"
+
                             class="flex items-start gap-3 rounded-xl bg-amber-50 p-4 transition hover:bg-amber-100 dark:bg-amber-500/10 dark:hover:bg-amber-500/15"
                         >
 
@@ -488,7 +489,7 @@
                     @if(isset($studentsWithoutParent) && $studentsWithoutParent > 0)
 
                         <a
-                            href="{{ route('admin.students.index') }}"
+                            href="{{ route('admin.students.index',['status'=>'no_parent'] ) }}"
                             class="flex items-start gap-3 rounded-xl bg-violet-50 p-4 transition hover:bg-violet-100 dark:bg-violet-500/10 dark:hover:bg-violet-500/15"
                         >
 
@@ -521,7 +522,7 @@
                     @if(isset($studentsWithoutTeachers) && $studentsWithoutTeachers > 0)
 
                         <a
-                            href="{{ route('admin.students.index') }}"
+                            href="{{ route('admin.students.index',['status'=>'no_teachers'] ) }}"
                             class="flex items-start gap-3 rounded-xl bg-red-50 p-4 transition hover:bg-red-100 dark:bg-red-500/10 dark:hover:bg-red-500/15"
                         >
 

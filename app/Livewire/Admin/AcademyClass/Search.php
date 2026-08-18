@@ -1,13 +1,16 @@
 <?php
 
+
 namespace App\Livewire\Admin\AcademyClass;
 
 
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\AcademyClass;
+
 
 
 
@@ -19,6 +22,7 @@ class Search extends Component
 
     public string $search = '';
 
+#[Url]
 public string $status = '';
 
  public function paginationView(): string

@@ -6,7 +6,7 @@
     <body class="min-h-screen bg-white dark:bg-zinc-800">
         <flux:sidebar sticky collapsible="mobile" class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800">
             <flux:sidebar.header>
-                <x-app-logo :sidebar="true" href="{{ route('dashboard') }}" wire:navigate />
+                <x-app-logo :sidebar="true" href="{{ route('admin.dashboard') }}" wire:navigate />
                 <flux:sidebar.collapse class="lg:hidden" />
             </flux:sidebar.header>
 
@@ -17,7 +17,7 @@
         <flux:sidebar.group :heading="__('Admin')" class="grid">
 
             <flux:sidebar.item
-                icon="home"
+                icon="squares-2x2"
                 :href="route('admin.dashboard')"
                 :current="request()->routeIs('admin.dashboard')"
                 wire:navigate>
@@ -26,7 +26,7 @@
 
 
             <flux:sidebar.item
-                icon="users"
+                icon="academic-cap"
                 :href="route('admin.students.index')"
                 :current="request()->routeIs('admin.students.*')"
                 wire:navigate>
@@ -35,7 +35,7 @@
 
 
             <flux:sidebar.item
-                icon="user"
+                icon="presentation-chart-bar"
                 :href="route('admin.teachers.index')"
                 :current="request()->routeIs('admin.teachers.*')"
                 wire:navigate>
@@ -52,7 +52,7 @@
             </flux:sidebar.item>
 
             <flux:sidebar.item
-            icon="academic-cap"
+            icon="book-open"
             :href="route('admin.classes.index')"
             :current="request()->routeIs('admin.classes.*')"
             wire:navigate>
@@ -70,7 +70,7 @@
 
 
             <flux:sidebar.item
-                icon="home"
+                icon="squares-2x2"
                 :href="route('teacher.dashboard')"
                 :current="request()->routeIs('teacher.dashboard')"
                 wire:navigate>
@@ -79,7 +79,7 @@
 
 
             <flux:sidebar.item
-                icon="users"
+                icon="academic-cap"
                 :href="route('teacher.students.index')"
                 :current="request()->routeIs('teacher.students.*')"
                 wire:navigate>
@@ -87,7 +87,7 @@
             </flux:sidebar.item>
 
             <flux:sidebar.item
-            icon="academic-cap"
+            icon="book-open"
             :href="route('teacher.classes.index')"
             :current="request()->routeIs('teacher.classes.*')"
             wire:navigate>
