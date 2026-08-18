@@ -19,6 +19,8 @@ class Search extends Component
 
     public string $search = '';
 
+public string $status = '';
+
  public function paginationView(): string
     {
         return 'vendor.pagination.tailwind';
@@ -27,13 +29,18 @@ class Search extends Component
     {
         $this->resetPage();
     }
+public function updatedStatus(): void
+{
+    $this->resetPage();
+}
 public function mount(): void
 {
     Gate::authorize('viewAny', User::class);
 }
 public function render()
 {
-    $baseQuery = AcademyClass::query()
+//used by table and stats
+   $statsQuery = AcademyClass::query()
         ->when($this->search, function ($query) {
             $search = $this->search;
 
@@ -45,13 +52,21 @@ public function render()
             });
         });
 
+    // table query — search + status filter
+    $baseQuery = (clone $statsQuery)
+        ->when($this->status === 'full', function ($query) {
+            $query->full();
+        })
+        ->when($this->status === 'available', function ($query) {
+            $query->available();
+        });
     $classes = (clone $baseQuery)
         ->with('teacher')
         ->withCount('students')
         ->latest()
         ->paginate(20);
 
-    $allClasses = (clone $baseQuery)
+    $allClasses = (clone $statsQuery)
         ->withCount('students')
         ->get(['id', 'capacity']);
 

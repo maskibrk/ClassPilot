@@ -61,6 +61,16 @@
             </div>
         </flux:field>
 
+    {{-- Status Filter --}}
+    <flux:select
+        wire:model.live="status"
+        class="w-full sm:w-48"
+    >
+        <flux:select.option value="">All statuses</flux:select.option>
+        <flux:select.option value="available">Available</flux:select.option>
+        <flux:select.option value="full">Full</flux:select.option>
+    </flux:select>
+
     </div>
 
 
