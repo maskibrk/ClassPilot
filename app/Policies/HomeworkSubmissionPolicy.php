@@ -21,13 +21,12 @@ class HomeworkSubmissionPolicy
      */
     public function view(User $user, HomeworkSubmission $submission): bool
     {
-if ($user->isTeacher()) {
-return $user->id ===$submission->homework->AcademyClass->teacher_id;
-}
-if ($user->isStudent()) {
-return $submission->student_id===$user->student->id;
-}
-
+        if ($user->isTeacher()) {
+            return $user->id === $submission->homework->AcademyClass->teacher_id;
+        }
+        if ($user->isStudent()) {
+            return $submission->student_id === $user->student->id;
+        }
     }
 
     /**
@@ -35,7 +34,7 @@ return $submission->student_id===$user->student->id;
      */
     public function create(User $user): bool
     {
-return $user->isStudent();
+        return $user->isStudent();
     }
 
     /**
@@ -43,13 +42,13 @@ return $user->isStudent();
      */
     public function update(User $user, HomeworkSubmission $submission): bool
     {
-if ($user->isTeacher()) {
-return $user->id ===$submission->homework->academyClass->teacher_id;
-}
-if ($user->isStudent()) {
+        if ($user->isTeacher()) {
+            return $user->id === $submission->homework->academyClass->teacher_id;
+        }
+        if ($user->isStudent()) {
 
-return $user->isStudent() && $submission->student_id===$user->student->id ;
-}
+            return $user->isStudent() && $submission->student_id === $user->student->id;
+        }
     }
 
     /**
@@ -58,13 +57,13 @@ return $user->isStudent() && $submission->student_id===$user->student->id ;
     public function delete(User $user, HomeworkSubmission $submission): bool
     {
 
-    if (!$user->isStudent()) {
-        return false;
-    }
-    if ($submission->grade !== null) {
-        return false;
-    }
-  return $submission->student_id === $user->student->id;
+        if (!$user->isStudent()) {
+            return false;
+        }
+        if ($submission->grade !== null) {
+            return false;
+        }
+        return $submission->student_id === $user->student->id;
     }
     /**
      * Determine whether the user can restore the model.

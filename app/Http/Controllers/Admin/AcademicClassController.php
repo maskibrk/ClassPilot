@@ -17,7 +17,7 @@ class AcademicClassController extends Controller
      */
     public function index()
     {
-Gate::authorize('viewAny', AcademyClass::class);
+        Gate::authorize('viewAny', AcademyClass::class);
 
         return view('admin.classes.index');
     }
@@ -60,7 +60,7 @@ Gate::authorize('viewAny', AcademyClass::class);
                 'string',
                 'max:255'
             ],
-  'capacity' => [
+            'capacity' => [
                 'required',
                 'int',
                 'max:40'
@@ -134,7 +134,7 @@ Gate::authorize('viewAny', AcademyClass::class);
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:255'],
             'students' => ['nullable', 'array'],
-  'capacity' => [
+            'capacity' => [
                 'required',
                 'int',
                 'max:40'
@@ -170,15 +170,15 @@ Gate::authorize('viewAny', AcademyClass::class);
             ->with('success', 'Class deleted successfully.');
     }
 
-public function students(User $teacher)
-{
-    Gate::authorize('view', $teacher);
+    public function students(User $teacher)
+    {
+        Gate::authorize('view', $teacher);
 
-    return response()->json(
-        $teacher->students()
-            ->select('students.id', 'students.name')
-            ->orderBy('students.name')
-            ->get()
-    );
-}
+        return response()->json(
+            $teacher->students()
+                ->select('students.id', 'students.name')
+                ->orderBy('students.name')
+                ->get()
+        );
+    }
 }

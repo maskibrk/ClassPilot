@@ -8,7 +8,7 @@ use Illuminate\Auth\Access\Response;
 
 class UserPolicy
 {
-use AdminBypass;
+    use AdminBypass;
     /**
      * Determine whether the user can view any models.
      */

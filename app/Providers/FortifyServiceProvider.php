@@ -18,13 +18,13 @@ class FortifyServiceProvider extends ServiceProvider
     /**
      * Register any application services.
      */
-public function register(): void
-{
-    $this->app->singleton(
-        LoginResponseContract::class,
-        LoginResponse::class
-    );
-}
+    public function register(): void
+    {
+        $this->app->singleton(
+            LoginResponseContract::class,
+            LoginResponse::class
+        );
+    }
     /**
      * Bootstrap any application services.
      */
@@ -49,11 +49,11 @@ public function register(): void
      */
     private function configureViews(): void
     {
-        Fortify::loginView(fn () => view('pages::auth.login'));
-        Fortify::verifyEmailView(fn () => view('pages::auth.verify-email'));
-        Fortify::registerView(fn () => view('pages::auth.register'));
-        Fortify::resetPasswordView(fn () => view('pages::auth.reset-password'));
-        Fortify::requestPasswordResetLinkView(fn () => view('pages::auth.forgot-password'));
+        Fortify::loginView(fn() => view('pages::auth.login'));
+        Fortify::verifyEmailView(fn() => view('pages::auth.verify-email'));
+        Fortify::registerView(fn() => view('pages::auth.register'));
+        Fortify::resetPasswordView(fn() => view('pages::auth.reset-password'));
+        Fortify::requestPasswordResetLinkView(fn() => view('pages::auth.forgot-password'));
     }
 
     /**
@@ -66,10 +66,9 @@ public function register(): void
         });
 
         RateLimiter::for('login', function (Request $request) {
-            $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())).'|'.$request->ip());
+            $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())) . '|' . $request->ip());
 
             return Limit::perMinute(5)->by($throttleKey);
         });
-
     }
 }

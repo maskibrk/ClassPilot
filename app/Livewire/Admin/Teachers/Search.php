@@ -22,20 +22,20 @@ class Search extends Component
     {
         $this->resetPage();
     }
- public function paginationView(): string
+    public function paginationView(): string
     {
         return 'vendor.pagination.tailwind';
     }
-public function mount(): void
-{
-    Gate::authorize('viewAny', User::class);
-}
+    public function mount(): void
+    {
+        Gate::authorize('viewAny', User::class);
+    }
     public function render()
     {
         $teachers = User::teachers()->withCount(['students'])
             ->when($this->search, function ($query) {
                 $search = $this->search;
-//ILIKE is postgres only
+                //ILIKE is postgres only
                 $query->where(function ($query) use ($search) {
                     $query->where('name', 'ILIKE', "%{$search}%")
                         ->orWhere('email', 'ILIKE', "%{$search}%")
@@ -44,8 +44,7 @@ public function mount(): void
             })
             ->latest()
             ->paginate(20);
-$totalTeachers=$teachers->total();
-        return view('livewire.admin.teachers.search',compact('teachers','totalTeachers'));
+        $totalTeachers = $teachers->total();
+        return view('livewire.admin.teachers.search', compact('teachers', 'totalTeachers'));
     }
 };
-?>

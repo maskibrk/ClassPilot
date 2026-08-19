@@ -17,9 +17,9 @@ class HomeworkSubmission extends Model
         'feedback',
         'grade',
     ];
-protected $casts = [
-    'submitted_at' => 'datetime',
-];
+    protected $casts = [
+        'submitted_at' => 'datetime',
+    ];
     public function student(): BelongsTo
     {
         return $this->belongsTo(Student::class);

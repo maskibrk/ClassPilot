@@ -18,8 +18,8 @@ class HomeworkSubmissionController extends Controller
     public function index(Homework $homework)
     {
         Gate::authorize('viewAny', $homework);
-$submissions=$homework->submissions()->get();
-return view('teacher.homeworks.submissions.index',compact('submissions','homework'));
+        $submissions = $homework->submissions()->get();
+        return view('teacher.homeworks.submissions.index', compact('submissions', 'homework'));
     }
 
     /**
@@ -41,55 +41,55 @@ return view('teacher.homeworks.submissions.index',compact('submissions','homewor
     /**
      * Display the specified resource.
      */
-    public function show(Homework $homework,HomeworkSubmission $submission)
+    public function show(Homework $homework, HomeworkSubmission $submission)
     {
 
         Gate::authorize('view', $submission);
-return view('teacher.homeworks.submissions.show',compact('submission','homework'));
+        return view('teacher.homeworks.submissions.show', compact('submission', 'homework'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Homework $homework,HomeworkSubmission $submission)
+    public function edit(Homework $homework, HomeworkSubmission $submission)
     {
-Gate::authorize('update', $submission);
+        Gate::authorize('update', $submission);
 
-    abort_unless(
-        $submission->homework_id === $homework->id,
-        404
-    );
-   return view(
-        'teacher.homeworks.submissions.edit',
-        compact('homework', 'submission')
-    );
+        abort_unless(
+            $submission->homework_id === $homework->id,
+            404
+        );
+        return view(
+            'teacher.homeworks.submissions.edit',
+            compact('homework', 'submission')
+        );
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request,Homework $homework,HomeworkSubmission $submission)
+    public function update(Request $request, Homework $homework, HomeworkSubmission $submission)
     {
-    Gate::authorize('update', $submission);
+        Gate::authorize('update', $submission);
 
-    abort_unless(
-        $submission->homework_id === $homework->id,
-        404
-    );
+        abort_unless(
+            $submission->homework_id === $homework->id,
+            404
+        );
 
-    $validated = $request->validate([
-        'grade' => ['nullable', 'numeric', 'min:0', 'max:20'],
-        'feedback' => ['nullable', 'string'],
-    ]);
+        $validated = $request->validate([
+            'grade' => ['nullable', 'numeric', 'min:0', 'max:20'],
+            'feedback' => ['nullable', 'string'],
+        ]);
 
-    $submission->update($validated);
+        $submission->update($validated);
 
-    return redirect()
-        ->route(
-            'teacher.homeworks.submissions.show',
-            [$homework, $submission]
-        )
-        ->with('success', 'Submission graded successfully.');
+        return redirect()
+            ->route(
+                'teacher.homeworks.submissions.show',
+                [$homework, $submission]
+            )
+            ->with('success', 'Submission graded successfully.');
     }
 
     /**
@@ -99,12 +99,13 @@ Gate::authorize('update', $submission);
     {
         //
     }
-public function preview(HomeworkSubmission $submission){
+    public function preview(HomeworkSubmission $submission)
+    {
 
         Gate::authorize('view', $submission);
 
         abort_unless($submission->file_path, 404);
 
         return Storage::response($submission->file_path);
-}
+    }
 }

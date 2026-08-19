@@ -10,11 +10,11 @@ class LoginResponse implements LoginResponseContract
     {
         if (auth()->user()->isAdmin()) {
             return redirect()->route('admin.dashboard');
-        }elseif (auth()->user()->isTeacher()) {
+        } elseif (auth()->user()->isTeacher()) {
             return redirect()->route('teacher.dashboard');
-        }elseif (auth()->user()->isParent()) {
+        } elseif (auth()->user()->isParent()) {
             return redirect()->route('parent.dashboard');
-        }elseif (auth()->user()->isStudent()) {
+        } elseif (auth()->user()->isStudent()) {
             return redirect()->route('student.dashboard');
         }
 

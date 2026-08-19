@@ -35,15 +35,15 @@ Route::middleware(['auth', 'role:admin'])
         Route::resource('teachers', TeacherController::class);
 
         Route::resource('parents', ParentController::class);
-Route::get('dashboard', [DashboardController::class,'index'])->name('dashboard');
+        Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
         Route::resource('students', AdminStudentController::class);
 
         Route::resource('classes', AdminAcademicClassController::class);
-Route::get(
-    'teachers/{teacher}/students',
-    [AdminAcademicClassController::class, 'students']
-)->name('teachers.students');
+        Route::get(
+            'teachers/{teacher}/students',
+            [AdminAcademicClassController::class, 'students']
+        )->name('teachers.students');
     });
 
 Route::middleware(['auth', 'role:teacher'])
@@ -55,7 +55,7 @@ Route::middleware(['auth', 'role:teacher'])
 
         Route::resource('students', TeacherStudentController::class);
 
-Route::resource('homeworks.submissions', TeacherHomeworkSubmissionController::class)->except('delete');
+        Route::resource('homeworks.submissions', TeacherHomeworkSubmissionController::class)->except('delete');
         Route::resource('classes', TeacherAcademicClassController::class);
         Route::resource('homeworks', TeacherHomeworkController::class);
         Route::get(
@@ -67,7 +67,6 @@ Route::resource('homeworks.submissions', TeacherHomeworkSubmissionController::cl
             'submissions/{submission}/preview',
             [TeacherHomeworkSubmissionController::class, 'preview']
         )->name('submissions.preview');
-
     });
 
 Route::middleware(['auth', 'role:parent'])
@@ -89,17 +88,17 @@ Route::middleware(['auth', 'role:student'])
         Route::resource('classes', ClassController::class)->only('index', 'show');
         Route::resource('homeworks', HomeworkController::class)->only('index', 'show');
 
-Route::get(
-    'homeworks/{homework}/submit',
-    [HomeworkSubmissionController::class, 'create']
-)->name('submissions.create');
+        Route::get(
+            'homeworks/{homework}/submit',
+            [HomeworkSubmissionController::class, 'create']
+        )->name('submissions.create');
 
-Route::post(
-    'homeworks/{homework}/submit',
-    [HomeworkSubmissionController::class, 'store']
-)->name('submissions.store');
-Route::resource('submissions', HomeworkSubmissionController::class)
-    ->except(['create', 'store','show']);
+        Route::post(
+            'homeworks/{homework}/submit',
+            [HomeworkSubmissionController::class, 'store']
+        )->name('submissions.store');
+        Route::resource('submissions', HomeworkSubmissionController::class)
+            ->except(['create', 'store', 'show']);
 
 
         Route::get(

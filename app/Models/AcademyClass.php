@@ -34,35 +34,38 @@ class AcademyClass extends Model
     {
         return $this->hasMany(Homework::class);
     }
-public function isFull(): bool
-{
-    return $this->students_count >= $this->capacity;
-}
-
-public function enrollmentPercentage(): int
-{
-    if ($this->capacity <= 0) {
-        return 0;
+    public function isFull(): bool
+    {
+        return $this->students_count >= $this->capacity;
     }
 
-    return min(
-        100,
-        (int) round(($this->students_count / $this->capacity) * 100)
-    );
-}
-public function availableSeats(): int { return max(0, $this->capacity - $this->students_count); }
+    public function enrollmentPercentage(): int
+    {
+        if ($this->capacity <= 0) {
+            return 0;
+        }
 
-public function scopeFull(Builder $query): Builder
-{
-    return $query->whereRaw(
-        '(SELECT COUNT(*) FROM academy_class_student WHERE academy_class_student.academy_class_id = academy_classes.id) >= capacity'
-    );
-}
+        return min(
+            100,
+            (int) round(($this->students_count / $this->capacity) * 100)
+        );
+    }
+    public function availableSeats(): int
+    {
+        return max(0, $this->capacity - $this->students_count);
+    }
 
-public function scopeAvailable(Builder $query): Builder
-{
-    return $query->whereRaw(
-        '(SELECT COUNT(*) FROM academy_class_student WHERE academy_class_student.academy_class_id = academy_classes.id) < capacity'
-    );
-}
+    public function scopeFull(Builder $query): Builder
+    {
+        return $query->whereRaw(
+            '(SELECT COUNT(*) FROM academy_class_student WHERE academy_class_student.academy_class_id = academy_classes.id) >= capacity'
+        );
+    }
+
+    public function scopeAvailable(Builder $query): Builder
+    {
+        return $query->whereRaw(
+            '(SELECT COUNT(*) FROM academy_class_student WHERE academy_class_student.academy_class_id = academy_classes.id) < capacity'
+        );
+    }
 }

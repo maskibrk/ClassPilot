@@ -16,13 +16,13 @@ class HomeworkSubmissionController extends Controller
     {
 
         Gate::authorize('viewAny', HomeworkSubmission::class);
- $submissions = HomeworkSubmission::where(
+        $submissions = HomeworkSubmission::where(
             'student_id',
             auth()->user()->student->id
         )
-        ->with('homework.academyClass')
-        ->latest()
-        ->get();
+            ->with('homework.academyClass')
+            ->latest()
+            ->get();
         return view('student.submissions.index', compact('submissions'));
     }
 
@@ -30,7 +30,7 @@ class HomeworkSubmissionController extends Controller
     {
 
         Gate::authorize('create', HomeworkSubmission::class);
-  Gate::authorize('view', $homework);
+        Gate::authorize('view', $homework);
         return view('student.submissions.create', compact('homework'));
     }
 
@@ -49,14 +49,14 @@ class HomeworkSubmissionController extends Controller
         ]);
 
         $filePath = $request->file('file')->store('submissions');
-$homework->submissions()->create(
-    collect($validated)
-        ->except('file')
-        ->put('file_path', $filePath)
-        ->put('student_id', auth()->user()->student->id)
-        ->put('submitted_at', now())
-        ->toArray()
-);
+        $homework->submissions()->create(
+            collect($validated)
+                ->except('file')
+                ->put('file_path', $filePath)
+                ->put('student_id', auth()->user()->student->id)
+                ->put('submitted_at', now())
+                ->toArray()
+        );
         return redirect()
             ->route('student.homeworks.show', $homework)
             ->with('success', 'Homework submitted successfully.');
@@ -65,15 +65,15 @@ $homework->submissions()->create(
     public function show(HomeworkSubmission $submission)
     {
 
-        Gate::authorize('view',$submission);
+        Gate::authorize('view', $submission);
 
         return view('student.submissions.show', compact('submission'));
     }
 
     public function edit(HomeworkSubmission $submission)
     {
-        Gate::authorize('update',$submission);
-    $submission->load('homework');
+        Gate::authorize('update', $submission);
+        $submission->load('homework');
         return view('student.submissions.edit', compact('submission'));
     }
 
@@ -113,26 +113,26 @@ $homework->submissions()->create(
     public function destroy(HomeworkSubmission $submission)
     {
 
-        Gate::authorize('delete',$submission);
+        Gate::authorize('delete', $submission);
 
         if ($submission->file_path) {
             Storage::delete($submission->file_path);
         }
-$homework=$submission->homework;
+        $homework = $submission->homework;
 
         $submission->delete();
 
         return redirect()
-            ->route('student.homeworks.show',$homework)
+            ->route('student.homeworks.show', $homework)
             ->with('success', 'Submission deleted.');
     }
-public function preview(HomeworkSubmission $submission){
+    public function preview(HomeworkSubmission $submission)
+    {
 
         Gate::authorize('view', $submission);
 
         abort_unless($submission->file_path, 404);
 
         return Storage::response($submission->file_path);
-}
-
+    }
 }

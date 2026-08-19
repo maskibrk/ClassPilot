@@ -105,8 +105,8 @@ class Student extends Model
             'academy_class_student'
         );
     }
-public function submissions()
-{
-    return $this->hasMany(HomeworkSubmission::class, 'student_id');
-}
+    public function submissions()
+    {
+        return $this->hasMany(HomeworkSubmission::class, 'student_id');
+    }
 }
